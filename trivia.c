@@ -102,23 +102,23 @@ int triviaPantalla(int preguntado[40], int pasada)
     char opcionA[50], opcionB[50], opcionC[50], opcionD[50], pregunta[300];
     int coordenadasOp[4]={10, 11, 12, 13}, coordenada, coordenada1, coordenada2, coordenada3, coordenada4;
     int coordenada1p, coordenada2p, coordenada3p, coordenada4p;
-    int fila, correcto=0, i=0, numPregunta=0;
-    int repetido=0;
+    int fila, correcto=0, i=0, numPregunta=0, limite;
+    int repetido;
     //Elegir aleatoriamente la regunta
     do {
       srand(time(NULL));
       fila = rand()%17; 
+      repetido=0;
+      limite = pasada;
       //Procurar que no haya pasado anteriormente
-       for (i=0;i<=pasada;i++) {
+       for (i=0;i<=limite;i++) {
         if(preguntado[i] == fila)
         {
           repetido=1;
         }
         else{
           //Guardar que ya se elegió dicha pregunta
-          preguntado[pasada]=fila;
-          pasada++;
-          repetido=0;
+          preguntado[pasada++]=fila;
         }
       }  
     } while(repetido==1);
@@ -165,11 +165,12 @@ int main()
   int fin = 0, puntoEnElJuego = 1, redibujar=0,minijuego=0, tiempo=1, x1 = 0, direccion = 1, a = 20;
   int correcta=0, respuesta=0, cambioPregunta=1, Preguntascorrectas=0, jugando=0, i=0;
   srand(time(NULL));
+  initscr(); 
   //inicializaciones de ncurses 
   keypad(stdscr, TRUE);
   noecho();
   cbreak();
-  initscr(); 
+  
   triviaPantalla(preguntado, pasada);
   refresh();          
   getch();                     
