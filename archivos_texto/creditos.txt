@@ -1,0 +1,22 @@
+Programadores:
+Julieta Melina Flores
+Santiago Emiliano Danda Bello
+Fernando Samuel López
+
+Créditos a:
+
+-94 the wolfe, por hacer algunas imágenes de arte ascii
+que utilizamos para el proyecto.
+
+-Henry Segerman, por hacer la fuente Henry 3D que utilizamos
+para el apartado de puntuaciones.
+
+-Al usuario "Sub-Zero", que hizo la fuente "Sub-Zero".
+
+-Al usuario "Patorjk", que creó la página "patorjk.com", con
+la cual generamos palabras con arte ascii.
+
+
+
+
+
