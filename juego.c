@@ -5,6 +5,7 @@
 #include "ventanasYFicheros.c"
 #include <stdbool.h>
 #include <time.h>
+#include <unistd.h>
 
 typedef struct
 {
@@ -14,10 +15,9 @@ typedef struct
 } Jugador;
 
 
-void juego();
+int juego();
 void puntuaciones();
 int menu();
-void lecturaFicheros(char* const nombreArchivo, WINDOW* ventana, char limite, char inicioLectura);
 
 int main (int argc, char* const argv[]) 
 {
@@ -36,19 +36,23 @@ int main (int argc, char* const argv[])
     refresh();
 
     int opcion = menu();
-    switch(opcion){
-        case 0:
-            juego();
-            break;
-        case 1:
-            break;
-        case 2:
-            puntuaciones();
-            break;
-        case 3:
-            break;
-        case 4:
-            break;
+    while(opcion != 4){
+        switch(opcion){
+            case 0:
+                opcion = juego();
+                break;
+            case 1:
+                break;
+            case 2:
+                puntuaciones();
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                opcion = menu();
+        }
     }
     endwin();
     return 0;
@@ -63,7 +67,7 @@ int menu()
     wattr_on(vntntxt, A_BOLD | COLOR_PAIR(1), "");
     mvwin(vntntxt, 5, COLS/2-50); //mueve la ventana del texto al centro
 
-    lecturaFicheros("./archivos_texto/sprites.txt", vntntxt, '1', '0');
+    lecturaFicheros("./archivos_texto/sprites.txt", vntntxt, "01", "00");
     wstandend(vntntxt);
 
     WINDOW* vntnopciones = crear_ventana(12, 15, LINES/2, COLS/2-7);
@@ -125,8 +129,13 @@ int menu()
     return opc;
 }
 
-void juego()
+int juego()
 {
+    init_pair(1, COLOR_RED, COLOR_BLACK);
+    init_pair(2, COLOR_BLUE, COLOR_BLACK);
+    init_pair(3, COLOR_WHITE, COLOR_BLACK);
+    int tecla;
+
     FILE* puntuaciones = fopen("./archivos_texto/puntuaciones.txt", "w");
     if(puntuaciones == NULL){
         endwin();
@@ -134,14 +143,70 @@ void juego()
         exit(1);
     }
     
-    Jugador jugador;
-    //¡Bienvenido! Por favor escribe tu nombre (Máximo 5 caracteres).
-    WINDOW* bienvenida = crear_ventana(3, 65, LINES/2-2, COLS/2-30);
+    Jugador jugador1, jugador2;
+    WINDOW* bienvenida = crear_ventana(3, 76, LINES/2-2, COLS/2-38);
+    WINDOW* salir = crear_ventana(1, 24, LINES-1, 0);
     refresh();
 
-    wprintw(bienvenida, "¡Bienvenido! Por favor escribe tu nombre (máximo 5 caracteres).");
-    wrefresh(bienvenida);
-    getch();
+    for(int i = 1; i <= 2; i++){ //pedir nombres
+        if(i == 1)
+            wattr_on(bienvenida, A_BOLD | COLOR_PAIR(1), "");
+        else
+            wattr_on(bienvenida, A_BOLD | COLOR_PAIR(2), "");
+        wprintw(bienvenida, "¡Bienvenido, jugador %i! Por favor escribe tu nombre (máximo 5 caracteres).", i);
+        wrefresh(bienvenida);
+        echo();
+        wmove(bienvenida, 2, (getmaxx(bienvenida)/2)-5);
+        if(i == 1)
+            wgetnstr(bienvenida, jugador1.nombre, 5);
+        else
+            wgetnstr(bienvenida, jugador2.nombre, 5);
+        wclear(bienvenida);
+        wrefresh(bienvenida);
+    }
+    wstandend(bienvenida);
+    noecho();
+
+    destruir_ventana(bienvenida);
+    refresh();
+    clear();
+
+    WINDOW* bateador = crear_ventana(20, 60, LINES/2-7, COLS/2-30);
+    for(int i = 1; i <= 3; i++){
+        if(i != 3)
+            lecturaFicheros("./archivos_texto/sprites.txt", bateador, '1'+i, '0'+i);
+        else
+            lecturaFicheros("./archivos_texto/sprites.txt", bateador, '5', '3');
+        usleep(500000);
+        wclear(bateador);
+        wrefresh(bateador);
+    }
+    wattr_on(salir, A_REVERSE | A_ITALIC, "");
+    wprintw(salir, "Para salir, presiona ESC");
+    wstandend(salir);
+    wrefresh(salir);
+
+    halfdelay(5); //inicio de la detección de eventos para el juego
+    while(1){
+        tecla = getch();
+        switch(tecla){
+        case 27: //esc
+            attr_on(COLOR_PAIR(2), "");
+            printw("a");
+            refresh();
+            break;
+        
+        default:
+            break;
+        }
+    }
+    
+    clear();
+
+    destruir_ventana(salir);
+    refresh();
+    clear();
+    return 5;
 }
 
 void puntuaciones()
