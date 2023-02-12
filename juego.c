@@ -14,8 +14,7 @@ typedef struct
     char fecha[11];
 } Jugador;
 
-
-int juego();
+void juego();
 void puntuaciones();
 int menu();
 
@@ -32,14 +31,14 @@ int main (int argc, char* const argv[])
     noecho();
     cbreak();
     keypad(stdscr, TRUE);
-    WINDOW* ventana = crear_ventana(5, 5, 5, 5);
     refresh();
 
     int opcion = menu();
     while(opcion != 4){
         switch(opcion){
             case 0:
-                opcion = juego();
+                juego();
+                opcion = 5;
                 break;
             case 1:
                 break;
@@ -67,7 +66,7 @@ int menu()
     wattr_on(vntntxt, A_BOLD | COLOR_PAIR(1), "");
     mvwin(vntntxt, 5, COLS/2-50); //mueve la ventana del texto al centro
 
-    lecturaFicheros("./archivos_texto/sprites.txt", vntntxt, "01", "00");
+    lecturaFicheros("./archivos_texto/sprites.txt", vntntxt, ';', "00");
     wstandend(vntntxt);
 
     WINDOW* vntnopciones = crear_ventana(12, 15, LINES/2, COLS/2-7);
@@ -129,7 +128,7 @@ int menu()
     return opc;
 }
 
-int juego()
+void juego()
 {
     init_pair(1, COLOR_RED, COLOR_BLACK);
     init_pair(2, COLOR_BLUE, COLOR_BLACK);
@@ -145,7 +144,7 @@ int juego()
     
     Jugador jugador1, jugador2;
     WINDOW* bienvenida = crear_ventana(3, 76, LINES/2-2, COLS/2-38);
-    WINDOW* salir = crear_ventana(1, 24, LINES-1, 0);
+    WINDOW* salir = crear_ventana(1, 24, 0, 0);
     refresh();
 
     for(int i = 1; i <= 2; i++){ //pedir nombres
@@ -164,7 +163,6 @@ int juego()
         wclear(bienvenida);
         wrefresh(bienvenida);
     }
-    wstandend(bienvenida);
     noecho();
 
     destruir_ventana(bienvenida);
@@ -172,41 +170,102 @@ int juego()
     clear();
 
     WINDOW* bateador = crear_ventana(20, 60, LINES/2-7, COLS/2-30);
-    for(int i = 1; i <= 3; i++){
-        if(i != 3)
-            lecturaFicheros("./archivos_texto/sprites.txt", bateador, '1'+i, '0'+i);
-        else
-            lecturaFicheros("./archivos_texto/sprites.txt", bateador, '5', '3');
+    char str[2] = {'0', '0'}; //sirve para manejar el inicio de la lectura del archivo sprites.txt
+    for(int i = 1; i <= 3; i++){ //ir pasando los sprites del bateador
+        str[1] += 1;
+        lecturaFicheros("./archivos_texto/sprites.txt", bateador, ';', str);
         usleep(500000);
         wclear(bateador);
         wrefresh(bateador);
     }
-    wattr_on(salir, A_REVERSE | A_ITALIC, "");
-    wprintw(salir, "Para salir, presiona ESC");
-    wstandend(salir);
-    wrefresh(salir);
+    destruir_ventana(bateador);
 
-    halfdelay(5); //inicio de la detección de eventos para el juego
-    while(1){
+    WINDOW* menuPausa = crear_ventana(4, 13, LINES/2-4, COLS/2-6);
+    box(menuPausa, '#', '*');
+    wmove(menuPausa, 1, 2);
+    refresh();
+
+    int innings = 1, opcionPausa = 0;
+    bool escape = false, activarMenu = false, dibujar = false;
+    char botonesPausa[2][9]= {
+                                "Regresar",
+                                "Salir"
+                                };
+    halfdelay(2); //inicio de la detección de eventos para el juego
+    while(innings != 9 && escape != true){
         tecla = getch();
         switch(tecla){
-        case 27: //esc
-            attr_on(COLOR_PAIR(2), "");
-            printw("a");
+        case 27: //escape
+            if(activarMenu == false){
+                activarMenu = true;
+                dibujar = true;
+            }
+            else{
+                activarMenu = false;
+                clear();
+            }
+            break;
+        
+        case 410: //redimensión
+            clear();
             refresh();
+            if(activarMenu == true){
+                mvwin(menuPausa, LINES/2-4, COLS/2-6);
+                wrefresh(menuPausa);
+            }
+            break;
+
+        case 119: //letra w
+            if(activarMenu == true){
+                if(opcionPausa != 0)
+                    opcionPausa--;
+                else
+                    opcionPausa = 1;
+                dibujar = true;
+            }
+            break;
+
+        case 115: //letra s
+            if(activarMenu == true){
+                if(opcionPausa != 1)
+                    opcionPausa++;
+                else
+                    opcionPausa = 0;
+                dibujar = true;
+            }
             break;
         
         default:
+            tecla = NULL;
             break;
         }
+        if(tecla == NULL){
+            if(activarMenu == true){
+                mvwin(menuPausa, LINES/2-4, COLS/2-6);
+                if(dibujar == true){
+                    wclear(menuPausa);
+                    box(menuPausa, '#', '*');
+                    for(int i = 0; i <= 1; i++){
+                        if(i == opcionPausa){
+                            wattr_on(menuPausa, A_BOLD | A_UNDERLINE, "");
+                            mvwprintw(menuPausa, 1+i, (strlen(botonesPausa[i])/2)-1, "%s", botonesPausa[i]);
+                            wstandend(menuPausa);
+                        }
+                        else
+                            mvwprintw(menuPausa, 1+i, (strlen(botonesPausa[i])/2)-1, "%s", botonesPausa[i]);
+                    }
+                    wrefresh(menuPausa);
+                    dibujar = false;
+                }
+            }
+        }
     }
-    
     clear();
 
+    destruir_ventana(menuPausa);
     destruir_ventana(salir);
     refresh();
     clear();
-    return 5;
 }
 
 void puntuaciones()

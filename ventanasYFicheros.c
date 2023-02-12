@@ -16,7 +16,7 @@ void destruir_ventana(WINDOW* ventana)
   delwin(ventana);
 }
 
-void lecturaFicheros(char* const nombreArchivo, WINDOW* ventana, char* limite, char* inicioLectura)
+void lecturaFicheros(char* const nombreArchivo, WINDOW* ventana, char limite, char* inicioLectura)
 {
   FILE* archivo;
 
@@ -27,31 +27,25 @@ void lecturaFicheros(char* const nombreArchivo, WINDOW* ventana, char* limite, c
     exit(1);
   }
 
-  /*endwin();
-    printf("%c", limite[1]);
-    exit(1);*/
-
   bool comenzarALeer = false, parar = false;
-  char crctr;
-  while(!feof(archivo) && parar != true){
-    if((fgetc(archivo)) == inicioLectura[0] && comenzarALeer != true){
-      if((fgetc(archivo)) == inicioLectura[1])
-        comenzarALeer = true;
-    }
-    if(comenzarALeer == true){
-      /*while((crctr = fgetc(archivo)) != limite[0])
-        wprintw(ventana, "%c", crctr);
-      break;*/
-      if((crctr = fgetc(archivo)) != limite[0])
-        wprintw(ventana, "%c", crctr);
-      else{
-        //if((crctr = fgetc(archivo)) == limite[1])
-        wprintw(ventana, "->%c", crctr);
-        wprintw(ventana, "%c", fgetc(archivo));
-        parar = true;
+  char crctr = NULL;
+
+  while(parar == false){
+    if(comenzarALeer == false){
+      if((fgetc(archivo)) == inicioLectura[0]){
+        if((fgetc(archivo)) == inicioLectura[1])
+          comenzarALeer = true;
       }
     }
+    if(comenzarALeer == true){
+      while(crctr != limite){
+        wprintw(ventana, "%c", crctr);
+        crctr = fgetc(archivo);
+      }
+      parar = true;
+    }
   }
+  
   wrefresh(ventana);
   fclose(archivo);
 }
