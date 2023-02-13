@@ -235,12 +235,22 @@ void juego()
             }
             break;
         
+        case 10:
+            if(activarMenu == true){
+                if(opcionPausa == 1)
+                    escape = true;
+                else
+                    activarMenu = false;
+                clear();
+            }
+            break;
+        
         default:
             tecla = NULL;
             break;
         }
         if(tecla == NULL){
-            if(activarMenu == true){
+            if(activarMenu == true){ //menu
                 mvwin(menuPausa, LINES/2-4, COLS/2-6);
                 if(dibujar == true){
                     wclear(menuPausa);
@@ -248,15 +258,18 @@ void juego()
                     for(int i = 0; i <= 1; i++){
                         if(i == opcionPausa){
                             wattr_on(menuPausa, A_BOLD | A_UNDERLINE, "");
-                            mvwprintw(menuPausa, 1+i, (strlen(botonesPausa[i])/2)-1, "%s", botonesPausa[i]);
+                            mvwprintw(menuPausa, 1+i, 6-(strlen(botonesPausa[i])/2), "%s", botonesPausa[i]);
                             wstandend(menuPausa);
                         }
                         else
-                            mvwprintw(menuPausa, 1+i, (strlen(botonesPausa[i])/2)-1, "%s", botonesPausa[i]);
+                            mvwprintw(menuPausa, 1+i, 6-(strlen(botonesPausa[i])/2), "%s", botonesPausa[i]);
                     }
                     wrefresh(menuPausa);
                     dibujar = false;
                 }
+            }
+            else{ //juego
+                
             }
         }
     }
