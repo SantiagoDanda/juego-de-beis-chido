@@ -16,6 +16,7 @@ typedef struct
 
 void juego();
 void puntuaciones();
+void creditos();
 int menu();
 
 int main (int argc, char* const argv[]) 
@@ -44,8 +45,11 @@ int main (int argc, char* const argv[])
                 break;
             case 2:
                 puntuaciones();
+                opcion = 5;
                 break;
             case 3:
+                creditos();
+                opcion = 5;
                 break;
             case 4:
                 break;
@@ -67,6 +71,7 @@ int menu()
     mvwin(vntntxt, 5, COLS/2-50); //mueve la ventana del texto al centro
 
     lecturaFicheros("./archivos_texto/sprites.txt", vntntxt, ';', "00");
+    wrefresh(vntntxt);
     wstandend(vntntxt);
 
     WINDOW* vntnopciones = crear_ventana(12, 15, LINES/2, COLS/2-7);
@@ -174,16 +179,17 @@ void juego()
     for(int i = 1; i <= 3; i++){ //ir pasando los sprites del bateador
         str[1] += 1;
         lecturaFicheros("./archivos_texto/sprites.txt", bateador, ';', str);
+        wrefresh(bateador);
         usleep(500000);
         wclear(bateador);
-        wrefresh(bateador);
     }
     destruir_ventana(bateador);
 
     WINDOW* menuPausa = crear_ventana(4, 13, LINES/2-4, COLS/2-6);
     box(menuPausa, '#', '*');
-    wmove(menuPausa, 1, 2);
+    WINDOW* textoPausa = crear_ventana(7, 53, 3, COLS/2-25);
     refresh();
+    lecturaFicheros("./archivos_texto/sprites.txt", textoPausa, '{', "21");
 
     int innings = 1, opcionPausa = 0;
     bool escape = false, activarMenu = false, dibujar = false;
@@ -235,7 +241,7 @@ void juego()
             }
             break;
         
-        case 10:
+        case 10: //enter
             if(activarMenu == true){
                 if(opcionPausa == 1)
                     escape = true;
@@ -251,8 +257,8 @@ void juego()
         }
         if(tecla == NULL){
             if(activarMenu == true){ //menu
-                mvwin(menuPausa, LINES/2-4, COLS/2-6);
                 if(dibujar == true){
+                    mvwin(menuPausa, LINES/2-4, COLS/2-6);
                     wclear(menuPausa);
                     box(menuPausa, '#', '*');
                     for(int i = 0; i <= 1; i++){
@@ -274,13 +280,27 @@ void juego()
         }
     }
     clear();
-
     destruir_ventana(menuPausa);
     destruir_ventana(salir);
+    destruir_ventana(textoPausa);
+
     refresh();
     clear();
 }
 
 void puntuaciones()
 {
+
+}
+
+void creditos()
+{
+    WINDOW* texto = crear_ventana(26, 65, 0, 0);
+    refresh();
+    lecturaFicheros("./archivos_texto/creditos.txt", texto, ';', "00");
+    wrefresh(texto);
+    int tecla;
+    while((tecla = wgetch(texto)) != 10){
+
+    }
 }

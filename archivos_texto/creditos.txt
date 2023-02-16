@@ -1,9 +1,9 @@
-Programadores:
+00Programadores:
 Julieta Melina Flores
 Santiago Emiliano Danda Bello
 Fernando Samuel López
 
-Créditos a:
+Créditos y agradecimientos a:
 
 -94 the wolfe, por hacer algunas imágenes de arte ascii
 que utilizamos para el proyecto.
@@ -11,12 +11,15 @@ que utilizamos para el proyecto.
 -Henry Segerman, por hacer la fuente Henry 3D que utilizamos
 para el apartado de puntuaciones.
 
--Al usuario "Sub-Zero", que hizo la fuente "Sub-Zero".
+-Al usuario "Sub-Zero", que hizo la fuente "Sub-Zero", 
+utilizada para el menú principal.
+
+-A Mike Rosulek, por hacer la fuente cosmic.flf que utilizamos
+para el menú de pausa.
 
 -Al usuario "Patorjk", que creó la página "patorjk.com", con
 la cual generamos palabras con arte ascii.
 
-
-
-
-
+-A los usuarios que crearon arte ascii utilizado en el proyecto, 
+pero que no podemos referenciar pues no existe información 
+sobre ellos.;

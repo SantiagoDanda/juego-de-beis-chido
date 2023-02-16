@@ -45,7 +45,5 @@ void lecturaFicheros(char* const nombreArchivo, WINDOW* ventana, char limite, ch
       parar = true;
     }
   }
-  
-  wrefresh(ventana);
   fclose(archivo);
 }
