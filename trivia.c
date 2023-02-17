@@ -21,6 +21,7 @@ void obtenerPreguntas(char pregunta[100], int fila)
     arch=fopen("preguntas/preguntas.txt", "r");
     if(!arch)
         printw("No se pudieron cargar las preguntas");
+
     //Guardar el renglón en pregunta
     for (i=0;i<fila;i++)
     {
@@ -121,12 +122,12 @@ int triviaPantalla(int preguntado[40], int pasada, int dificultad)
       limite = pasada;
       //Procurar que no haya pasado anteriormente
        for (i=0;i<=limite;i++) {
-        if(preguntado[i] == fila)
+        if(preguntado[i] == fila)//NO se repitio la pregunta
         {
           repetido=1;
         }
         else{
-          //Guardar que ya se elegió dicha pregunta
+          //Guarda que esa pregunta ya no se puede utilizar despues 
           preguntado[pasada++]=fila;
         }
       }  
@@ -167,16 +168,36 @@ int triviaPantalla(int preguntado[40], int pasada, int dificultad)
     }while (coordenada4 == coordenada1 || coordenada2 == coordenada4 || coordenada3 == coordenada4 ) ;
     coordenada4p=coordenadasOp[coordenada4];
    mvprintw(coordenada4p,20, opcionD);
+     mvprintw(100,1, coordenada1);
     return coordenada1;
 }
 
-int main()
+int mainTrivia()
 {  
   int preguntado[40];
   preguntado[0] = 90;
   int pasada=0;
-  int fin = 0, puntoEnElJuego = 1, redibujar=0,minijuego=0, tiempo=1, x1 = 0, direccion = 1, a = 20, dificultad=0;
-  int correcta=0, respuesta=0, cambioPregunta=1, Preguntascorrectas=0, jugando=0, i=0, opcion=0, strike=0, base1=0,base2=0, puntaje1=0, puntaje2=0;
+  int fin = 0, 
+
+      puntoEnElJuego = 1, 
+      redibujar=0,minijuego=0, 
+      tiempo=1, x1 = 0, 
+      direccion = 1, 
+      a = 20, 
+      
+      dificultad=0;
+
+  int correcta=0, 
+  
+      respuesta=0, 
+      cambioPregunta=1, 
+      Preguntascorrectas=0, 
+      jugando=0, 
+      i=0, 
+
+      opcion=0, 
+      strike=0, base1=0,base2=0, puntaje1=0, puntaje2=0;
+      
   char tecla='a', turno='1';
   srand(time(NULL));
   initscr(); 
@@ -187,13 +208,17 @@ int main()
   {
 
     mvprintw(29,29, "Turno %c", turno);
+    /*
     if(opcion!=8)
     {
       correcta=triviaPantalla(preguntado, pasada, dificultad);
       refresh();       
-    }
-    mvprintw(0,0,"          ");
+    }*/
+    mvprintw(0,0,"      :v    ");
     tecla=getch(); 
+    
+    //mvprintw(16,16, "%c", tecla);
+    //refresh(); 
     switch(tecla)
     {
       case 'a':
@@ -222,6 +247,7 @@ int main()
         opcion=8;
       }
     }
+    /*
     if(opcion==correcta)
     {
       mvprintw(0,0,"correcto");
@@ -249,7 +275,7 @@ int main()
        
       }
     
-    }
+    }*/
     getch();
     clear(); 
   }
