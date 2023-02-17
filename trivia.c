@@ -101,11 +101,27 @@ void obtenerOpciones(char opA[50], char opB[50], char opC[50], char opD[50],int 
 int triviaPantalla(int preguntado[40], int pasada, int dificultad)
 {
     char opcionA[50], opcionB[50], opcionC[50], opcionD[50], pregunta[300];
-    int coordenadasOp[4]={17, 18, 19, 20}, coordenada, coordenada1, coordenada2, coordenada3, coordenada4, turno=1;
+    int coordenadasOp[4]={17, 18, 19, 20}, 
+        
+        coordenada, 
+        
+        coordenada1, coordenada2, coordenada3, coordenada4, 
+        
+        turno=1;
+
     int coordenada1p, coordenada2p, coordenada3p, coordenada4p;
-    int fila, correcto=0, i=0, numPregunta=0, limite;
+    int fila, 
+    
+        correcto=0, 
+        
+        i=0, 
+        
+        numPregunta=0, limite;
+
+        
     int repetido;
-    //Elegir aleatoriamente la regunta
+
+    //Elegir aleatoriamente la pregunta:
     do {
       srand(time(NULL));
       fila = rand()%40; 
@@ -120,6 +136,7 @@ int triviaPantalla(int preguntado[40], int pasada, int dificultad)
       }
       repetido=0;
       limite = pasada;
+
       //Procurar que no haya pasado anteriormente
        for (i=0;i<=limite;i++) {
         if(preguntado[i] == fila)//NO se repitio la pregunta
@@ -172,8 +189,12 @@ int triviaPantalla(int preguntado[40], int pasada, int dificultad)
     return coordenada1;
 }
 
-int mainTrivia()
-{  
+
+
+
+
+int mainTrivia()//-------------YA NO UTILIZABLE:---------------
+{    
   int preguntado[40];
   preguntado[0] = 90;
   int pasada=0;
