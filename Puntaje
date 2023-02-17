@@ -1,0 +1,140 @@
+void Imprimirpuntuaciones()
+{
+    char puntuacion[40];
+    int i=0, j=0, pos;
+    int coordenada={10, 11, 12, 13, 14};
+  FILE *arch;
+  arch = fopen("archivos_texto/puntuaciones.txt", "r");
+  if (!arch)
+    printf("No se pudieron leer los puntajes");
+  for(i=0; i<40; i++)
+    {
+    puntuacion[i]="\0";
+    }
+    //Eliminar punto y coma
+    for(i=0; i<5; i++)
+    {
+         fgets(puntuacion, 100, arch);
+         for(j=0;j<40;j++)
+         {
+            if (puntuacion[j]==';')
+            {
+                puntuacion[j]=' ';
+            }
+         }
+         pos = coordenada[i];
+        mvprintw(pos, 10,puntuacion );
+    }
+}
+
+void acomodar(int arr[], int indices[]) {
+   int i, j, temp;
+   for (i = 0; i < 5; i++) {      
+       for (j = 0; j < 5-i; j++) {
+           if (arr[j] < arr[j+1]) {
+              temp = arr[j];
+              arr[j] = arr[j+1];
+              arr[j+1] = temp;
+
+              temp = indices[j];
+              indices[j] = indices[j+1];
+              indices[j+1] = temp;
+           }
+       }
+   }
+}
+void Actualizarpuntajes(int puntaje, char jugador[20]) {
+  int i = 0, j = 0, a = 0, puntajes[6], multiplicacion=1,z=0, suma=0, orden[6], min=0, indice=0; 
+ int numero[3];
+  char palabra[40], ganadores[6][40];
+  // Obtner la fecha y hora actuales
+  time_t t = time(NULL);
+  struct tm *fecha = localtime(&t);
+  char fecha_str[80];
+  strftime(fecha_str, sizeof(fecha_str), "%d/%m/%Y %H:%M:%S",
+           fecha); // Formato de la fecha y la guarda en fecha_str
+  // Leer archivo de puntajes, reescribir archivo de puntajes con los 5 más
+  // altos
+  FILE *arch;
+  arch = fopen("archivos_texto/puntuaciones.txt", "r");
+  if (!arch)
+    printf("No se pudieron leer los puntajes");
+  for(i=0; i<20; i++)
+    {
+    palabra[i]="\0";
+    }
+    for(i=0; i<3; i++)
+    {
+      numero[i]=-9;
+    }
+
+  for (i = 0; i < 5; i++) {
+    fgets(palabra, 100, arch);
+    strcpy(ganadores[i], palabra);
+		 for(j=0;j<strlen(palabra)-1;j++)
+		 {
+      
+      if(palabra[j]==';')
+			{
+          j+=2;
+          a=0;
+		    	while(palabra[j]!=';'){
+				    numero[a]=(int)palabra[j]-48;
+            a++;
+            j++;
+            
+  			 	}
+       
+        a--;
+        multiplicacion=1;
+         for (z=a; z>0; z--)
+         {
+           multiplicacion*=10;
+         }
+     
+        suma=0;
+        for (z=0; z<=a; z++)
+          {
+            if(numero[z]>0)
+            {
+              suma+=numero[z]*multiplicacion;
+            }
+            multiplicacion/=10;
+          }
+        puntajes[i]=suma;
+  			a=0;
+        j=strlen(palabra)-1;
+			 
+			}
+			 
+		 }
+  }
+//Buscar los valores más altos
+fclose(arch);
+  puntajes[i]=puntaje;
+
+   for (i = 0; i < 6; i++){
+       orden[i] = i;
+    }
+   acomodar(puntajes, orden);
+ 
+arch = fopen("archivos_texto/puntuaciones.txt", "w");
+  if (!arch)
+    printf("No se pudieron leer los puntajes");
+  //escribir todos nombres que se mantienen, en orden, en el archivo
+  for(a=0;a<5;a++)
+    {
+        if(orden[a]==5)
+        {
+          fprintf(arch, "%s",jugador);
+          fprintf(arch, "%s","; ");
+          fprintf(arch, "%i",105);
+          fprintf(arch, "%s","; ");
+          fprintf(arch, "%s", fecha_str);
+          fprintf(arch, "%s",";\n");
+        }else{
+          fprintf(arch, "%s", ganadores[orden[a]]);
+        } 
+    }
+fclose(arch);
+}
