@@ -137,7 +137,7 @@ void juego()
 {
     init_pair(1, COLOR_RED, COLOR_BLACK);
     init_pair(2, COLOR_BLUE, COLOR_BLACK);
-    init_pair(3, COLOR_WHITE, COLOR_BLACK);
+    init_pair(3, COLOR_MAGENTA, COLOR_BLACK);
     int tecla;
 
     FILE* puntuaciones = fopen("./archivos_texto/puntuaciones.txt", "w");
@@ -175,6 +175,7 @@ void juego()
     clear();
 
     WINDOW* bateador = crear_ventana(20, 60, LINES/2-7, COLS/2-30);
+    wattr_on(bateador, A_BOLD | COLOR_PAIR(3), "");
     char str[2] = {'0', '0'}; //sirve para manejar el inicio de la lectura del archivo sprites.txt
     for(int i = 1; i <= 3; i++){ //ir pasando los sprites del bateador
         str[1] += 1;
@@ -185,29 +186,46 @@ void juego()
     }
     destruir_ventana(bateador);
 
-    WINDOW* menuPausa = crear_ventana(4, 13, LINES/2-4, COLS/2-6);
-    box(menuPausa, '#', '*');
-    WINDOW* textoPausa = crear_ventana(7, 53, 3, COLS/2-25);
-    refresh();
-    lecturaFicheros("./archivos_texto/sprites.txt", textoPausa, '{', "21");
+    int parteDelJuego = 0; /*esta variable indicará qué momento del juego se está ejecutando (si se está
+                            preguntando, si se está ejecutando una animación, etc)*/
 
-    int innings = 1, opcionPausa = 0;
+    int innings = 1, opcionPausa = 0, ciclos = 0; //ciclos sirve para controlar las animaciones
     bool escape = false, activarMenu = false, dibujar = false;
     char botonesPausa[2][9]= {
                                 "Regresar",
                                 "Salir"
                                 };
+    str[1] = '0';
+    str[0] = '1'; //sirve para controlar los sprites del número de innings
+    
+    //VENTANAS PARA EL JUEGO
+    WINDOW* textoInnings = crear_ventana(7, 63, LINES/2-16, COLS/2-31);
+    WINDOW* numInnings = crear_ventana(7, 10, LINES/2+4, COLS/2-5);
+    //VENTANAS PARA LA PAUSA
+    WINDOW* menuPausa = crear_ventana(4, 13, LINES/2-4, COLS/2-6);
+    box(menuPausa, '#', '*');
+    WINDOW* textoPausa = crear_ventana(7, 53, 3, COLS/2-25);
+    refresh();
+
+    wattr_on(textoInnings, A_BOLD | COLOR_PAIR(3), "");
+    wattr_on(textoPausa, A_BOLD | COLOR_PAIR(2), "");
+
     halfdelay(2); //inicio de la detección de eventos para el juego
     while(innings != 9 && escape != true){
         tecla = getch();
         switch(tecla){
         case 27: //escape
+            clear();
             if(activarMenu == false){
                 activarMenu = true;
                 dibujar = true;
             }
-            else{
+            else{ 
                 activarMenu = false;
+                wclear(textoPausa);
+                wclear(textoInnings);
+                wclear(numInnings);
+                dibujar = true;
                 clear();
             }
             break;
@@ -217,7 +235,17 @@ void juego()
             refresh();
             if(activarMenu == true){
                 mvwin(menuPausa, LINES/2-4, COLS/2-6);
+                mvwin(textoPausa, 3, COLS/2-25);
                 wrefresh(menuPausa);
+                wrefresh(textoPausa);
+            }
+            else{
+                if(parteDelJuego == 0){
+                    mvwin(textoInnings, LINES/2-16, COLS/2-31);
+                    mvwin(numInnings, LINES/2+4, COLS/2-5);
+                    wrefresh(textoInnings);
+                    wrefresh(numInnings);
+                }
             }
             break;
 
@@ -245,8 +273,13 @@ void juego()
             if(activarMenu == true){
                 if(opcionPausa == 1)
                     escape = true;
-                else
+                else{
                     activarMenu = false;
+                    wclear(textoPausa);
+                    wclear(textoInnings);
+                    wclear(numInnings);
+                    dibujar = true;
+                }
                 clear();
             }
             break;
@@ -257,11 +290,13 @@ void juego()
         }
         if(tecla == NULL){
             if(activarMenu == true){ //menu
-                if(dibujar == true){
-                    mvwin(menuPausa, LINES/2-4, COLS/2-6);
+                if(dibujar == true){ 
+                    mvwin(menuPausa, LINES/2-4, COLS/2-6); 
                     wclear(menuPausa);
                     box(menuPausa, '#', '*');
-                    for(int i = 0; i <= 1; i++){
+                    lecturaFicheros("./archivos_texto/sprites.txt", textoPausa, '{', "21");
+                    wrefresh(textoPausa);
+                    for(int i = 0; i <= 1; i++){ //remarcar las opciones
                         if(i == opcionPausa){
                             wattr_on(menuPausa, A_BOLD | A_UNDERLINE, "");
                             mvwprintw(menuPausa, 1+i, 6-(strlen(botonesPausa[i])/2), "%s", botonesPausa[i]);
@@ -275,7 +310,35 @@ void juego()
                 }
             }
             else{ //juego
-                
+                switch(parteDelJuego){
+                    case 0: //se reproduce animación que indica qué inning se está jugando
+                        if(ciclos == 0 || dibujar == true){
+                            lecturaFicheros("./archivos_texto/sprites.txt", textoInnings, ';', "07");
+                            lecturaFicheros("./archivos_texto/sprites.txt", numInnings, ';', str);
+                            wrefresh(textoInnings);
+                            wrefresh(numInnings);
+                            dibujar = false;
+                        }
+                        ciclos++;
+                        if(ciclos != 7){
+                            usleep(250000);
+                        }
+                        else{
+                            str[1] += 1;
+                            //parteDelJuego = 1;
+                            ciclos = 0;
+                            wclear(textoInnings);
+                            wclear(numInnings);
+                            clear();
+                        }
+                        break;
+
+                    case 1: //se reproduce animación que indica turno de jugador 1 o 2
+                        break;
+                    case 2: //se hacen las preguntas
+                        break;
+                    innings++;
+                }
             }
         }
     }
@@ -283,9 +346,8 @@ void juego()
     destruir_ventana(menuPausa);
     destruir_ventana(salir);
     destruir_ventana(textoPausa);
-
+    destruir_ventana(textoInnings);
     refresh();
-    clear();
 }
 
 void puntuaciones()
@@ -303,4 +365,5 @@ void creditos()
     while((tecla = wgetch(texto)) != 10){
 
     }
+    destruir_ventana(texto);
 }
