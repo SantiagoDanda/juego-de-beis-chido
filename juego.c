@@ -2,10 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "ventanasYFicheros.c"
 #include <stdbool.h>
 #include <time.h>
 #include <unistd.h>
+#include "ventanasYFicheros.c"
+#include "trivia.c"
 
 typedef struct
 {
@@ -42,6 +43,8 @@ int main (int argc, char* const argv[])
                 opcion = 5;
                 break;
             case 1:
+                //instrucciones();
+                opcion = 5;
                 break;
             case 2:
                 puntuaciones();
@@ -77,7 +80,8 @@ int menu()
     WINDOW* vntnopciones = crear_ventana(12, 15, LINES/2, COLS/2-7);
     refresh();
 
-    int opc = 0, tecla, redimension = 1;
+    char tecla;
+    int opc = 0,  redimension = 1;
     char opciones[5][14] = { "Jugar", //opc 0
                             "Instrucciones", //opc 1
                             "Puntuaciones", //opc 2
@@ -138,7 +142,41 @@ void juego()
     init_pair(1, COLOR_RED, COLOR_BLACK);
     init_pair(2, COLOR_BLUE, COLOR_BLACK);
     init_pair(3, COLOR_WHITE, COLOR_BLACK);
+
     int tecla;
+//------------------------------------------------------------
+    int preguntado[40];
+    preguntado[0] = 90;
+    int pasada=0;
+    int fin = 0, 
+      correcta=0, 
+
+      puntoEnElJuego = 1, 
+      redibujar=0,minijuego=0, 
+      tiempo=1, 
+      
+      x1 = 0, 
+      direccion = 1, 
+      a = 20, 
+      
+      dificultad=0,
+
+  
+  
+      respuesta=0, 
+      cambioPregunta=1, 
+      Preguntascorrectas=0, 
+      jugando=0, 
+      i=0, 
+
+      opcion=0, 
+      strike=0, base1=0,base2=0, puntaje1=0, puntaje2=0;
+      
+    char teclaChar='a', turno='1';
+
+
+//------------------------------------------------------------
+
 
     FILE* puntuaciones = fopen("./archivos_texto/puntuaciones.txt", "w");
     if(puntuaciones == NULL){
@@ -174,6 +212,7 @@ void juego()
     refresh();
     clear();
 
+    //TRANSICION (ANIMACION): BATEADOR
     WINDOW* bateador = crear_ventana(20, 60, LINES/2-7, COLS/2-30);
     char str[2] = {'0', '0'}; //sirve para manejar el inicio de la lectura del archivo sprites.txt
     for(int i = 1; i <= 3; i++){ //ir pasando los sprites del bateador
@@ -196,67 +235,171 @@ void juego()
     char botonesPausa[2][9]= {
                                 "Regresar",
                                 "Salir"
-                                };
+                                };      
+
+
     halfdelay(2); //inicio de la detección de eventos para el juego
-    while(innings != 9 && escape != true){
-        tecla = getch();
-        switch(tecla){
-        case 27: //escape
-            if(activarMenu == false){
-                activarMenu = true;
-                dibujar = true;
-            }
-            else{
-                activarMenu = false;
-                clear();
-            }
-            break;
-        
-        case 410: //redimensión
-            clear();
-            refresh();
-            if(activarMenu == true){
-                mvwin(menuPausa, LINES/2-4, COLS/2-6);
-                wrefresh(menuPausa);
-            }
-            break;
+    
+    srand(time(NULL));
+  
+    //getch();
+    //clear(); 
+    //FUNCIONALIDAD JUEGO 
+    while(innings != 9 && escape != true && fin==0 && base1<3 && base2<3){//"innings" = "entradas"
+  
 
-        case 119: //letra w
-            if(activarMenu == true){
-                if(opcionPausa != 0)
-                    opcionPausa--;
-                else
-                    opcionPausa = 1;
-                dibujar = true;
-            }
-            break;
-
-        case 115: //letra s
-            if(activarMenu == true){
-                if(opcionPausa != 1)
-                    opcionPausa++;
-                else
-                    opcionPausa = 0;
-                dibujar = true;
-            }
-            break;
-        
-        case 10: //enter
-            if(activarMenu == true){
-                if(opcionPausa == 1)
-                    escape = true;
-                else
-                    activarMenu = false;
-                clear();
-            }
-            break;
-        
-        default:
-            tecla = NULL;
-            break;
+        mvprintw(29,29, "Turno %c", turno);
+        if(opcion!=8)
+        {
+            correcta=triviaPantalla(preguntado, pasada, dificultad);
+            refresh();       
         }
+
+        mvprintw(0,0,"          ");   
+
+        if(opcion==correcta)
+        {
+            mvprintw(0,0,"correcto");
+            if(turno=='1'){
+                base1++;
+                turno='2';
+                puntaje1+=dificultad;
+            }else{
+                turno='1';
+                base2++;
+                puntaje2+=dificultad;
+            }
+        }
+        else{
+            mvprintw(0,0,"Incorrecto");
+            strike++;
+            if(strike==3)
+            {
+                if(turno=='1')
+                {
+                turno='2';
+                }else{
+                turno='2';
+                }
+            
+            }            
+        }
+
+        //EVENTOS
+        tecla = getch();        
+    
+        mvprintw(16,16, "%c", tecla);
+        refresh(); 
+        switch(tecla)
+        {
+            case 'a':
+            {
+                opcion=0;
+                break;
+            }
+            case 'A':
+            {
+                opcion=0;
+                break;
+            }
+
+            case 'b':
+            {
+                opcion=1;
+                break;
+            }
+            case 'B':
+            {
+                {
+                opcion=1;
+                break;
+            }
+            }
+            case 'c':
+            {
+                opcion=2;
+                break;
+            }
+            case 'C':
+            {
+                opcion=2;
+                break;
+            }
+            case 'd':
+            {
+                opcion=3;
+                break;
+            }
+            case 'D':
+            {
+                opcion=3;
+                break;
+            }
+      
+            case 27: //escape
+                if(activarMenu == false){
+                    activarMenu = true;
+                    dibujar = true;
+                }
+                else{
+                    activarMenu = false;
+                    clear();
+                }
+                break;
+            
+            case 410: //redimensión
+                clear();
+                refresh();
+                if(activarMenu == true){
+                    mvwin(menuPausa, LINES/2-4, COLS/2-6);
+                    wrefresh(menuPausa);
+                }
+                break;
+
+            case 119: //letra w
+                if(activarMenu == true){
+                    if(opcionPausa != 0)//EN el menu de Pausa ->Reconfigurable
+                        opcionPausa--;
+                    else
+                        opcionPausa = 1;
+                    dibujar = true;
+                }
+                break;
+
+            case 115: //letra s
+                if(activarMenu == true){
+                    if(opcionPausa != 1)
+                        opcionPausa++;
+                    else
+                        opcionPausa = 0;
+                    dibujar = true;
+                }
+                break;
+            
+            case 10: //enter
+                if(activarMenu == true){
+                    if(opcionPausa == 1)
+                        escape = true;
+                    else
+                        activarMenu = false;
+                    clear();
+                }
+                break;
+            
+            default:
+            {
+                mvprintw(0,0,"inválido");
+                opcion=8; //**     
+                tecla = NULL;            
+            }
+       
+                
+        }
+
+        //IMPRESIONES (VENTANAS-GRAFICOS)
         if(tecla == NULL){
-            if(activarMenu == true){ //menu
+            //-MENU PAUSA
+            if(activarMenu == true){ //menuPausa?
                 if(dibujar == true){
                     mvwin(menuPausa, LINES/2-4, COLS/2-6);
                     wclear(menuPausa);
@@ -275,7 +418,27 @@ void juego()
                 }
             }
             else{ //juego
-                
+                mainTrivia();
+                //PRUEBA (ignorar siguientes 10 lineas)
+                /*
+                WINDOW* sas = crear_ventana(20, 60, LINES/2-7, COLS/2-30);
+                char stal[2] = {'0', '0'}; //sirve para manejar el inicio de la lectura del archivo sprites.txt
+                for(int i = 1; i <= 3; i++){ //ir pasando los sprites del bateador
+                    stal[1] += 1;
+                    lecturaFicheros("./archivos_texto/sprites.txt", sas, ';', stal);
+                    wrefresh(sas);
+                    usleep(500000);
+                    wclear(sas);
+                }
+                destruir_ventana(sas);
+                */
+                //mainTrivia();
+
+/*
+
+  */
+/************************************************************************************/
+
             }
         }
     }
