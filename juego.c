@@ -337,7 +337,8 @@ void juego()
                         break;
                     case 2: //se hacen las preguntas
                         break;
-                    innings++;
+                    case 3:
+                        break;
                 }
             }
         }

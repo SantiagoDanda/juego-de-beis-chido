@@ -21,6 +21,7 @@ void obtenerPreguntas(char pregunta[100], int fila)
     arch=fopen("preguntas/preguntas.txt", "r");
     if(!arch)
         printw("No se pudieron cargar las preguntas");
+
     //Guardar el renglón en pregunta
     for (i=0;i<fila;i++)
     {
@@ -97,27 +98,36 @@ void obtenerOpciones(char opA[50], char opB[50], char opC[50], char opD[50],int 
 }
 
 
-int triviaPantalla(int preguntado[40], int pasada)
+int triviaPantalla(int preguntado[40], int pasada, int dificultad)
 {
     char opcionA[50], opcionB[50], opcionC[50], opcionD[50], pregunta[300];
-    int coordenadasOp[4]={10, 11, 12, 13}, coordenada, coordenada1, coordenada2, coordenada3, coordenada4;
+    int coordenadasOp[4]={17, 18, 19, 20}, coordenada, coordenada1, coordenada2, coordenada3, coordenada4, turno=1;
     int coordenada1p, coordenada2p, coordenada3p, coordenada4p;
     int fila, correcto=0, i=0, numPregunta=0, limite;
     int repetido;
     //Elegir aleatoriamente la regunta
     do {
       srand(time(NULL));
-      fila = rand()%17; 
+      fila = rand()%40; 
+      if(fila<15)
+      {
+        dificultad=1;
+      }else if(fila<30)
+      {
+        dificultad=2;
+      }else{
+        dificultad =3;
+      }
       repetido=0;
       limite = pasada;
       //Procurar que no haya pasado anteriormente
        for (i=0;i<=limite;i++) {
-        if(preguntado[i] == fila)
+        if(preguntado[i] == fila)//NO se repitio la pregunta
         {
           repetido=1;
         }
         else{
-          //Guardar que ya se elegió dicha pregunta
+          //Guarda que esa pregunta ya no se puede utilizar despues 
           preguntado[pasada++]=fila;
         }
       }  
@@ -125,7 +135,11 @@ int triviaPantalla(int preguntado[40], int pasada)
     i=0;
     obtenerPreguntas(pregunta, fila);
     //mostrar pregunta optenida
-    mvprintw(20,20, pregunta);
+    mvprintw(10,20, pregunta);
+    mvprintw(17,17, "A)");
+    mvprintw(18,17, "B)");
+    mvprintw(19,17, "C)");
+    mvprintw(20,17, "D)");
     obtenerOpciones(opcionA, opcionB, opcionC, opcionD, fila);
     //Las opciones se mostrarán en un orden aleatorio
     //coordenada de la opcion a
@@ -154,26 +168,118 @@ int triviaPantalla(int preguntado[40], int pasada)
     }while (coordenada4 == coordenada1 || coordenada2 == coordenada4 || coordenada3 == coordenada4 ) ;
     coordenada4p=coordenadasOp[coordenada4];
    mvprintw(coordenada4p,20, opcionD);
+     mvprintw(100,1, coordenada1);
     return coordenada1;
 }
 
-int main()
+int mainTrivia()
 {  
   int preguntado[40];
   preguntado[0] = 90;
   int pasada=0;
-  int fin = 0, puntoEnElJuego = 1, redibujar=0,minijuego=0, tiempo=1, x1 = 0, direccion = 1, a = 20;
-  int correcta=0, respuesta=0, cambioPregunta=1, Preguntascorrectas=0, jugando=0, i=0;
+  int fin = 0, 
+
+      puntoEnElJuego = 1, 
+      redibujar=0,minijuego=0, 
+      tiempo=1, x1 = 0, 
+      direccion = 1, 
+      a = 20, 
+      
+      dificultad=0;
+
+  int correcta=0, 
+  
+      respuesta=0, 
+      cambioPregunta=1, 
+      Preguntascorrectas=0, 
+      jugando=0, 
+      i=0, 
+
+      opcion=0, 
+      strike=0, base1=0,base2=0, puntaje1=0, puntaje2=0;
+      
+  char tecla='a', turno='1';
   srand(time(NULL));
   initscr(); 
-  //inicializaciones de ncurses 
   keypad(stdscr, TRUE);
   noecho();
   cbreak();
-  
-  triviaPantalla(preguntado, pasada);
-  refresh();          
-  getch();                     
-  endwin();               
+  while (fin==0 && base1<3 && base2<3)
+  {
+
+    mvprintw(29,29, "Turno %c", turno);
+    /*
+    if(opcion!=8)
+    {
+      correcta=triviaPantalla(preguntado, pasada, dificultad);
+      refresh();       
+    }*/
+    mvprintw(0,0,"      :v    ");
+    tecla=getch(); 
+    
+    //mvprintw(16,16, "%c", tecla);
+    //refresh(); 
+    switch(tecla)
+    {
+      case 'a':
+      {
+        opcion=0;
+        break;
+      }
+      case 'b':
+      {
+        opcion=1;
+        break;
+      }
+      case 'c':
+      {
+        opcion=2;
+        break;
+      }
+      case 'd':
+      {
+        opcion=3;
+        break;
+      }
+      default:
+      {
+        mvprintw(0,0,"inválido");
+        opcion=8;
+      }
+    }
+    /*
+    if(opcion==correcta)
+    {
+      mvprintw(0,0,"correcto");
+      if(turno=='1'){
+        base1++;
+        turno='2';
+        puntaje1+=dificultad;
+      }else{
+        turno='1';
+        base2++;
+        puntaje2+=dificultad;
+      }
+    }
+    else{
+       mvprintw(0,0,"Incorrecto");
+       strike++;
+      if(strike==3)
+      {
+        if(turno=='1')
+        {
+           turno='2';
+        }else{
+          turno='2';
+        }
+       
+      }
+    
+    }*/
+    getch();
+    clear(); 
+  }
+  endwin();  
+           
   return 0;
 }
