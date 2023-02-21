@@ -211,8 +211,10 @@ void juego()
     wattr_on(textoPausa, A_BOLD | COLOR_PAIR(2), "");
 
     halfdelay(2); //inicio de la detección de eventos para el juego
+
+    //AÑadir cambio por mayusculas
     while(innings != 9 && escape != true){
-        tecla = getch();
+        tecla = getch(); // Deteccion de eventos
         switch(tecla){
         case 27: //escape
             clear();
@@ -257,6 +259,7 @@ void juego()
                     opcionPausa = 1;
                 dibujar = true;
             }
+            tecla = NULL;
             break;
 
         case 115: //letra s
@@ -267,6 +270,7 @@ void juego()
                     opcionPausa = 0;
                 dibujar = true;
             }
+            tecla = NULL;
             break;
         
         case 10: //enter
@@ -336,12 +340,18 @@ void juego()
                     case 1: //se reproduce animación que indica turno de jugador 1 o 2
                         break;
                     case 2: //se hacen las preguntas
+                        //FERSA Momento
+
                         break;
                     case 3:
                         break;
                 }
             }
         }
+        //TAl vez las PUNTUACIONES
+        //Guardar las PUNTUACIONES en el archivo de texto
+
+
     }
     clear();
     destruir_ventana(menuPausa);
