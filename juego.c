@@ -190,7 +190,7 @@ void juego()
                             preguntando, si se está ejecutando una animación, etc)*/
 
     int innings = 1, opcionPausa = 0, ciclos = 0; //ciclos sirve para controlar las animaciones
-    bool escape = false, activarMenu = false, dibujar = false;
+    bool escape = false, activarMenuPausa = false, dibujar = false;
     char botonesPausa[2][9]= {
                                 "Regresar",
                                 "Salir"
@@ -218,12 +218,12 @@ void juego()
         switch(tecla){
         case 27: //escape
             clear();
-            if(activarMenu == false){
-                activarMenu = true;
+            if(activarMenuPausa == false){
+                activarMenuPausa = true;
                 dibujar = true;
             }
             else{ 
-                activarMenu = false;
+                activarMenuPausa = false;
                 wclear(textoPausa);
                 wclear(textoInnings);
                 wclear(numInnings);
@@ -235,7 +235,7 @@ void juego()
         case 410: //redimensión
             clear();
             refresh();
-            if(activarMenu == true){
+            if(activarMenuPausa == true){
                 mvwin(menuPausa, LINES/2-4, COLS/2-6);
                 mvwin(textoPausa, 3, COLS/2-25);
                 wrefresh(menuPausa);
@@ -252,7 +252,7 @@ void juego()
             break;
 
         case 119: //letra w
-            if(activarMenu == true){
+            if(activarMenuPausa == true){
                 if(opcionPausa != 0)
                     opcionPausa--;
                 else
@@ -263,7 +263,7 @@ void juego()
             break;
 
         case 115: //letra s
-            if(activarMenu == true){
+            if(activarMenuPausa == true){
                 if(opcionPausa != 1)
                     opcionPausa++;
                 else
@@ -274,11 +274,11 @@ void juego()
             break;
         
         case 10: //enter
-            if(activarMenu == true){
+            if(activarMenuPausa == true){
                 if(opcionPausa == 1)
                     escape = true;
                 else{
-                    activarMenu = false;
+                    activarMenuPausa = false;
                     wclear(textoPausa);
                     wclear(textoInnings);
                     wclear(numInnings);
@@ -293,7 +293,7 @@ void juego()
             break;
         }
         if(tecla == NULL){
-            if(activarMenu == true){ //menu
+            if(activarMenuPausa == true){ //MENU DE PAUSA
                 if(dibujar == true){ 
                     mvwin(menuPausa, LINES/2-4, COLS/2-6); 
                     wclear(menuPausa);
@@ -313,7 +313,7 @@ void juego()
                     dibujar = false;
                 }
             }
-            else{ //juego
+            else{ //JUEGO 
                 switch(parteDelJuego){
                     case 0: //se reproduce animación que indica qué inning se está jugando
                         if(ciclos == 0 || dibujar == true){
