@@ -48,6 +48,7 @@ void obtenerOpciones(char opA[50], char opB[50], char opC[50], char opD[50],int 
     int o = 0, u = 0, i;
     FILE *arch;
     char opciones[300];
+
     //llenando el arreglo de \0
     for (i = 0; i < 300; i++) {
         opciones[i] = '\0';
@@ -56,6 +57,7 @@ void obtenerOpciones(char opA[50], char opB[50], char opC[50], char opD[50],int 
     arch = fopen("preguntas/respuestas.txt", "r");
     if (!arch)
         printw("No se pudieron cargar las opciones");
+
     //Obtener el renglon de opciones
     for (i = 0; i < fila; i++) {
         fgets(opciones, 300, arch);
@@ -141,6 +143,7 @@ int triviaPantalla(int preguntado[40], int pasada, int dificultad)
     mvprintw(19,17, "C)");
     mvprintw(20,17, "D)");
     obtenerOpciones(opcionA, opcionB, opcionC, opcionD, fila);
+
     //Las opciones se mostrarán en un orden aleatorio
     //coordenada de la opcion a
     srand(time(NULL));
@@ -168,6 +171,7 @@ int triviaPantalla(int preguntado[40], int pasada, int dificultad)
     }while (coordenada4 == coordenada1 || coordenada2 == coordenada4 || coordenada3 == coordenada4 ) ;
     coordenada4p=coordenadasOp[coordenada4];
    mvprintw(coordenada4p,20, opcionD);
+   
      mvprintw(100,1, coordenada1);
     return coordenada1;
 }
@@ -208,12 +212,12 @@ int mainTrivia()
   {
 
     mvprintw(29,29, "Turno %c", turno);
-    /*
+    
     if(opcion!=8)
     {
       correcta=triviaPantalla(preguntado, pasada, dificultad);
       refresh();       
-    }*/
+    }
     mvprintw(0,0,"      :v    ");
     tecla=getch(); 
     
@@ -247,7 +251,7 @@ int mainTrivia()
         opcion=8;
       }
     }
-    /*
+    
     if(opcion==correcta)
     {
       mvprintw(0,0,"correcto");
@@ -275,7 +279,7 @@ int mainTrivia()
        
       }
     
-    }*/
+    }
     getch();
     clear(); 
   }
