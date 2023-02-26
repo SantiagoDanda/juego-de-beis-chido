@@ -1,3 +1,20 @@
+/*
+juego.c
+
+En este código se crea prácticamente todo el juego. Está hecho de tal forma que cada apartado del menú (juego, instrucciones, créditos etc)
+está hecho en una subrutina distinta. 
+
+Podrá observar que en la subrutina de juegos hay algunas divisiones. Por una parte, se señala cuando el programa lee entradas del usuario 
+y cuando "dibuja", dependiendo de si el juego está en pausa o ejecutándose. Asimismo se señala a través de la variable "parteDelJuego" en
+qué preciso momento de la ejecución se encuentra el programa.
+
+Autor: Santiago Danda
+<email: quetzal.danda@gmail.com>
+<github: SantiagoDanda>
+
+Fecha: 21 de enero de 2023
+*/
+
 #include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,6 +23,9 @@
 #include <stdbool.h>
 #include <time.h>
 #include <unistd.h>
+
+#define MITADCOLS COLS/2 //mitad para x
+#define MITADLINES LINES/2 //mitad para y
 
 typedef struct
 {
@@ -17,7 +37,8 @@ typedef struct
 void juego();
 void puntuaciones();
 void creditos();
-int menu();
+void escoger_pregunta();
+int menu(); //devuelve la opción elegida
 
 int main (int argc, char* const argv[]) 
 {
@@ -42,6 +63,7 @@ int main (int argc, char* const argv[])
                 opcion = 5;
                 break;
             case 1:
+                escoger_pregunta();
                 break;
             case 2:
                 puntuaciones();
@@ -52,6 +74,7 @@ int main (int argc, char* const argv[])
                 opcion = 5;
                 break;
             case 4:
+                escoger_pregunta();
                 break;
             case 5:
                 opcion = menu();
@@ -74,7 +97,7 @@ int menu()
     wrefresh(vntntxt);
     wstandend(vntntxt);
 
-    WINDOW* vntnopciones = crear_ventana(12, 15, LINES/2, COLS/2-7);
+    WINDOW* vntnopciones = crear_ventana(12, 15, MITADLINES, MITADCOLS-7);
     refresh();
 
     int opc = 0, tecla, redimension = 1;
@@ -104,8 +127,8 @@ int menu()
         case 410: //caso de redimensionamiento
             clear();
             refresh();
-            mvwin(vntntxt, 5, COLS/2-50);
-            mvwin(vntnopciones, LINES/2, COLS/2-7);
+            mvwin(vntntxt, 5, MITADCOLS-50);
+            mvwin(vntnopciones, MITADLINES, MITADCOLS-7);
             wrefresh(vntntxt);
             wrefresh(vntnopciones);
             break;
@@ -148,7 +171,7 @@ void juego()
     }
     
     Jugador jugador1, jugador2;
-    WINDOW* bienvenida = crear_ventana(3, 76, LINES/2-2, COLS/2-38);
+    WINDOW* bienvenida = crear_ventana(3, 76, MITADLINES-2, MITADCOLS-38);
     WINDOW* salir = crear_ventana(1, 24, 0, 0);
     refresh();
 
@@ -174,7 +197,7 @@ void juego()
     refresh();
     clear();
 
-    WINDOW* bateador = crear_ventana(20, 60, LINES/2-7, COLS/2-30);
+    WINDOW* bateador = crear_ventana(20, 60, MITADLINES-10, MITADCOLS-30);
     wattr_on(bateador, A_BOLD | COLOR_PAIR(3), "");
     char str[2] = {'0', '0'}; //sirve para manejar el inicio de la lectura del archivo sprites.txt
     for(int i = 1; i <= 3; i++){ //ir pasando los sprites del bateador
@@ -186,25 +209,53 @@ void juego()
     }
     destruir_ventana(bateador);
 
+    srand(time(NULL));
+    int nPreguntas[54], elementos = 54, localidadRandom, preguntasRevueltas[54];
+    for(int i = 0; i <= 53; i++){
+        nPreguntas[i] = i+1;
+    }
+
+    int i = 0, reacomodar;
+    while(elementos != 1){ //con esto "barajeamos" el arreglo para sacar preguntas aleatorias
+        localidadRandom = rand() % elementos;
+        preguntasRevueltas[i] = nPreguntas[localidadRandom];
+        reacomodar = (elementos - 1) - localidadRandom;
+        for(int j = 0; j <= reacomodar; j++){
+            nPreguntas[localidadRandom + j] = nPreguntas[localidadRandom + j + 1];
+        }
+        elementos--;
+        i++;
+    }
     int parteDelJuego = 0; /*esta variable indicará qué momento del juego se está ejecutando (si se está
                             preguntando, si se está ejecutando una animación, etc)*/
-
-    int innings = 1, opcionPausa = 0, ciclos = 0; //ciclos sirve para controlar las animaciones
+    int innings = 1, //marcar las entradas 
+    opcionPausa = 0, 
+    ciclos = 0, //ciclos sirve para controlar las animaciones
+    turno = 1, //referente al turno del jugador
+    indicePreguntas = 0; //controla qué localidad del arreglo de preguntas barajeadas se toma en cuenta
     bool escape = false, activarMenu = false, dibujar = false;
     char botonesPausa[2][9]= {
-                                "Regresar",
+                                "regresar",
                                 "Salir"
                                 };
     str[1] = '0';
     str[0] = '1'; //sirve para controlar los sprites del número de innings
-    
+    char strPreguntas[3] = {'0', '0', '\0'}; //sirve para controlar la pregunta que se desplegará
     //VENTANAS PARA EL JUEGO
-    WINDOW* textoInnings = crear_ventana(7, 63, LINES/2-16, COLS/2-31);
-    WINDOW* numInnings = crear_ventana(7, 10, LINES/2+4, COLS/2-5);
+    //1
+    WINDOW* textoInnings = crear_ventana(7, 63, MITADLINES-16, MITADCOLS-31);
+    WINDOW* numInnings = crear_ventana(7, 10, MITADLINES+4, MITADCOLS-5);
+    //2
+    WINDOW* textoTurno = crear_ventana(8, 98, MITADLINES-16, MITADCOLS-49);
+    //3
+    WINDOW* pregunta = crear_ventana(4, 98, 4, MITADCOLS-49);
+    box(pregunta, '|', '~');
+    wmove(pregunta, 1, 1);
+    
     //VENTANAS PARA LA PAUSA
-    WINDOW* menuPausa = crear_ventana(4, 13, LINES/2-4, COLS/2-6);
+    WINDOW* menuPausa = crear_ventana(4, 13, MITADLINES-4, MITADCOLS-6);
     box(menuPausa, '#', '*');
-    WINDOW* textoPausa = crear_ventana(7, 53, 3, COLS/2-25);
+    WINDOW* textoPausa = crear_ventana(7, 53, 3, MITADCOLS-25);
     refresh();
 
     wattr_on(textoInnings, A_BOLD | COLOR_PAIR(3), "");
@@ -220,11 +271,17 @@ void juego()
                 activarMenu = true;
                 dibujar = true;
             }
-            else{ 
+            else{
                 activarMenu = false;
                 wclear(textoPausa);
-                wclear(textoInnings);
-                wclear(numInnings);
+                if(parteDelJuego == 0){
+                    wclear(textoInnings);
+                    wclear(numInnings);
+                }
+                if(parteDelJuego == 1){
+                    wclear(textoTurno);
+                    wclear(numInnings);
+                }
                 dibujar = true;
                 clear();
             }
@@ -234,19 +291,22 @@ void juego()
             clear();
             refresh();
             if(activarMenu == true){
-                mvwin(menuPausa, LINES/2-4, COLS/2-6);
-                mvwin(textoPausa, 3, COLS/2-25);
+                mvwin(menuPausa, MITADLINES-4, MITADCOLS-6);
+                mvwin(textoPausa, 3, MITADCOLS-25);
                 wrefresh(menuPausa);
                 wrefresh(textoPausa);
             }
-            else{
-                if(parteDelJuego == 0){
-                    mvwin(textoInnings, LINES/2-16, COLS/2-31);
-                    mvwin(numInnings, LINES/2+4, COLS/2-5);
-                    wrefresh(textoInnings);
-                    wrefresh(numInnings);
-                }
+            if(parteDelJuego == 0){
+                mvwin(textoInnings, MITADLINES-16, MITADCOLS-31);
+                mvwin(numInnings, MITADLINES+4, MITADCOLS-5);
             }
+            if(parteDelJuego == 1){
+                mvwin(textoTurno, MITADLINES-16, MITADCOLS-49);
+                mvwin(numInnings, MITADLINES+4, MITADCOLS-5);
+            }
+            activarMenu = true;
+            tecla = NULL;
+            dibujar = true;
             break;
 
         case 119: //letra w
@@ -256,6 +316,7 @@ void juego()
                 else
                     opcionPausa = 1;
                 dibujar = true;
+                tecla = NULL;
             }
             break;
 
@@ -266,6 +327,7 @@ void juego()
                 else
                     opcionPausa = 0;
                 dibujar = true;
+                tecla = NULL;
             }
             break;
         
@@ -278,6 +340,7 @@ void juego()
                     wclear(textoPausa);
                     wclear(textoInnings);
                     wclear(numInnings);
+                    wclear(textoTurno);
                     dibujar = true;
                 }
                 clear();
@@ -291,7 +354,7 @@ void juego()
         if(tecla == NULL){
             if(activarMenu == true){ //menu
                 if(dibujar == true){ 
-                    mvwin(menuPausa, LINES/2-4, COLS/2-6); 
+                    mvwin(menuPausa, MITADLINES-4, MITADCOLS-6); 
                     wclear(menuPausa);
                     box(menuPausa, '#', '*');
                     lecturaFicheros("./archivos_texto/sprites.txt", textoPausa, '{', "21");
@@ -320,12 +383,20 @@ void juego()
                             dibujar = false;
                         }
                         ciclos++;
-                        if(ciclos != 7){
-                            usleep(250000);
+                        if(ciclos != 14){
+                            if(ciclos % 2 != 0){
+                                wclear(numInnings);
+                                wrefresh(numInnings);
+                            }
+                            else{
+                                lecturaFicheros("./archivos_texto/sprites.txt", numInnings, ';', str);
+                                wrefresh(numInnings);
+                            }
+                            usleep(125000);
                         }
                         else{
                             str[1] += 1;
-                            //parteDelJuego = 1;
+                            parteDelJuego = 1;
                             ciclos = 0;
                             wclear(textoInnings);
                             wclear(numInnings);
@@ -334,8 +405,48 @@ void juego()
                         break;
 
                     case 1: //se reproduce animación que indica turno de jugador 1 o 2
+                        if(ciclos == 0 || dibujar == true){
+                            if(turno == 1){
+                                wattr_on(textoTurno, A_BOLD | COLOR_PAIR(1), "");
+                                lecturaFicheros("./archivos_texto/sprites.txt", numInnings, ';', "10"); //en este caso numInnings se utiliza 
+                                                                                                        //para marcar el turno correspondiente
+                            }
+                            else{
+                                wattr_on(textoTurno, A_BOLD | COLOR_PAIR(2), "");
+                                lecturaFicheros("./archivos_texto/sprites.txt", numInnings, ';', "11");
+                            }
+                            lecturaFicheros("./archivos_texto/sprites.txt", textoTurno, ';', "22");
+    
+                            wrefresh(numInnings);
+                            wrefresh(textoTurno);
+                            dibujar = false;
+                        }
+                        ciclos++;
+                        if(ciclos != 4){
+                            usleep(250000);
+                        }
+                        else{
+                            parteDelJuego = 2;
+                            ciclos = 0;
+                            wclear(textoTurno);
+                            wclear(numInnings);
+                            clear();
+                        }
                         break;
                     case 2: //se hacen las preguntas
+                        if(ciclos == 0 || dibujar == true){
+                            if(preguntasRevueltas[indicePreguntas] / 10 != 0)
+                                strPreguntas[0] += preguntasRevueltas[indicePreguntas] / 10;
+                            strPreguntas[1] += preguntasRevueltas[indicePreguntas] % 10;
+                            lecturaFicheros("./preguntas/preguntas.txt", pregunta, ';', strPreguntas);
+                            
+                            wrefresh(pregunta);
+                            dibujar = false;
+                        }
+                        ciclos++;
+                        if(ciclos != 120){
+                            
+                        }
                         break;
                     case 3:
                         break;
@@ -367,4 +478,35 @@ void creditos()
 
     }
     destruir_ventana(texto);
+}
+
+void escoger_pregunta()
+{
+    init_pair(1, COLOR_WHITE, COLOR_RED);
+    init_pair(2, COLOR_BLACK, COLOR_GREEN);
+
+    // Crear una ventana
+    WINDOW *win = newwin(10, 30, 5, 5);
+
+    // Establecer el color de fondo de la ventana
+    wbkgd(win, COLOR_PAIR(1));
+
+    // Imprimir texto en la ventana
+    mvwprintw(win, 1, 1, "Texto con fondo rojo");
+    mvwprintw(win, 2, 1, "Otro texto con fondo rojo");
+    getch();
+
+    // Cambiar el color de fondo de la ventana
+    wbkgd(win, COLOR_PAIR(2));
+
+    // Imprimir más texto en la ventana
+    mvwprintw(win, 3, 1, "Texto con fondo verde");
+    mvwprintw(win, 4, 1, "Otro texto con fondo verde");
+    getch();
+
+    // Actualizar la ventana
+    wrefresh(win);
+
+    // Esperar a que el usuario presione una tecla
+    getch();
 }

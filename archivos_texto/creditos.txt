@@ -1,7 +1,7 @@
-00Programadores:
-Julieta Melina Flores
+00Programador:
 Santiago Emiliano Danda Bello
-Fernando Samuel López
+<email: quetzal.danda@gmail.com>
+<github: SantiagoDanda>
 
 Créditos y agradecimientos a:
 
