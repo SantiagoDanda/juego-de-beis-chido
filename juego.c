@@ -19,6 +19,7 @@ void juego();
 void puntuaciones();
 void creditos();
 int menu();
+
 void obtenerPreguntas(char pregunta[100], int filaRand)
 {
     int  i;
@@ -114,7 +115,7 @@ void obtenerOpciones(char opA[50], char opB[50], char opC[50], char opD[50],int 
 }
 
 
-int triviaPantalla(int preguntado[40], int numPreguntasPasadas, int dificultad)
+int triviaPantalla(int preguntado[40], int *numPreguntasPasadas, int *ultimaPreguntaRegistrada)
 //correcta=triviaPantalla(preguntado, numPreguntasPasadas, dificultad);//asignacion de la respuesta correcta 
   //y captura de pregutnas y respuestas, asi como su impresion
 /*
@@ -124,6 +125,8 @@ int triviaPantalla(int preguntado[40], int numPreguntasPasadas, int dificultad)
   dificultad: un entero que representa la dificultad de la pregunta actual.
 */
 {
+    int dificultad;
+
     char opcionA[50], opcionB[50], opcionC[50], opcionD[50], pregunta[300]; //Varuables para guardar el texto (caracteres) del archivo
     int coordenadasOp[4]={17, 18, 19, 20}, 
         coordenada, //son variables que sirven de
@@ -459,8 +462,11 @@ void juego()
 
 
     int preguntado[40], indice,
-        dificultad=0;
+        //dificultad=0;
     int numPreguntasPasadas=0;
+
+    int ultimaPreguntaRegistrada=0;
+
 
     for (indice = 0; indice < 40; indice++)
     {
@@ -740,13 +746,13 @@ srand(time(NULL));
                             //opcion = 0;
                             verifTecla = 0;
                         }
-                        
+
                         if(opcion > 0 && opcion <= 4 && tecla != ERR)//Generar una nueva preguntaaaaa
                         {
                             opcion = -1;
                             mvprintw(0,0,"                                  ");
                             mvprintw(29,29, "Turno %c", turno);
-                            correcta=triviaPantalla(preguntado, numPreguntasPasadas, dificultad);//asignacion de la respuesta correcta                     
+                            correcta=triviaPantalla(preguntado, &apu_numPregPasadas, &apu_ultimaPregReg);//asignacion de la respuesta correcta                     
                             printw("%i",correcta);
                             //y captura de pregutnas y respuestas, asi como su impresion                        
 /*
