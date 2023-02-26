@@ -6,7 +6,7 @@
 #include <time.h>
 #include <unistd.h>
 #include "ventanasYFicheros.c"
-#include "trivia.c"
+//#include "trivia.c"
 
 typedef struct
 {
@@ -19,6 +19,204 @@ void juego();
 void puntuaciones();
 void creditos();
 int menu();
+void obtenerPreguntas(char pregunta[100], int filaRand)
+{
+    int  i;
+    FILE *arch;
+    // llenando el arreglo de \0
+    for (i=0;i<100;i++) {
+        pregunta[i] = '\0';
+    }
+    //abrir y archivo de preguntas
+    arch=fopen("preguntas/preguntas.txt", "r");
+    if(!arch)
+      printw("No se pudieron cargar las preguntas");
+
+    //Guardar el renglón en pregunta
+    for (i=1;i<=filaRand;i++)//Se desplazaria n cantidad de renglones que no nos interesan, porque
+    //lo que nos interesa en la fila "filaRand"
+    {
+      fgets(pregunta, 100,arch);//tal vez aqui sea sizeof(pregunta) en vez de "100"
+    }
+
+    //Procurar que el punto y coma y demás caracteres sean nulos
+    for(i=0;i<100;i++)//UNa vez encontrada la pregunta deseada, borra (\0) la basura
+    //de los demas caracteres despues del ;
+    {
+        if(pregunta[i] == ';')
+        {
+            while(i<100)
+            {
+              pregunta[i]='\0';
+              i++;
+            }
+        }
+    }
+    fclose(arch);
+}
+
+void obtenerOpciones(char opA[50], char opB[50], char opC[50], char opD[50],int filaRand) {
+    //A siempre es la correcta
+    //Las cordenadas donde se muestran de manera aleatoria
+    int o = 0, u = 0, i;
+    FILE *arch;
+    char opciones[300];
+
+    //llenando el arreglo de \0
+    for (i = 0; i < 300; i++) {
+      opciones[i] = '\0';
+    }
+    //cargar archivos de respuestas
+    arch = fopen("preguntas/respuestas.txt", "r");
+    if (!arch)
+      printw("No se pudieron cargar las opciones");
+
+    //Obtener el renglon de opciones
+    for (i = 1; i <= filaRand; i++) {
+        fgets(opciones, 300, arch);
+    }
+
+    //opcion A
+    while (opciones[o] != ';') {
+        opA[u] = opciones[o];
+        u++;
+        o++;
+    }
+    o++;
+    opA[u] = '\0';
+    u = 0;
+     //opcion B
+    while (opciones[o] != ';') {
+        opB[u] = opciones[o];
+        u++;
+        o++;
+    }
+    o++;
+    opB[u] = '\0';
+    u = 0;
+     //opcion C
+    while (opciones[o] != ';') {
+        opC[u] = opciones[o];
+        u++;
+        o++;
+    }
+    o++;
+    opC[u] = '\0';
+    u = 0;
+  //opcion D
+    while (opciones[o] != ';') {
+        opD[u] = opciones[o];
+        u++;
+        o++;
+    }
+    opD[u] = '\0';
+    fclose(arch);
+}
+
+
+int triviaPantalla(int preguntado[40], int numPreguntasPasadas, int dificultad)
+//correcta=triviaPantalla(preguntado, numPreguntasPasadas, dificultad);//asignacion de la respuesta correcta 
+  //y captura de pregutnas y respuestas, asi como su impresion
+/*
+  preguntado: un arreglo de enteros que contiene las preguntas que ya se preguntaron 
+  anteriormente para evitar preguntar dos veces la misma pregunta.
+  numPreguntasPasadas: la cantidad de preguntas que ya se preguntaron anteriormente.
+  dificultad: un entero que representa la dificultad de la pregunta actual.
+*/
+{
+    char opcionA[50], opcionB[50], opcionC[50], opcionD[50], pregunta[300]; //Varuables para guardar el texto (caracteres) del archivo
+    int coordenadasOp[4]={17, 18, 19, 20}, 
+        coordenada, //son variables que sirven de
+    //indices para usarlos en arreglos que le daran una posicion aleatoria 
+    //el posicionamiento de las respuestas
+        coordenada1, 
+        coordenada2, coordenada3, coordenada4, turno=1;
+    int coordenada1p, 
+        coordenada2p, coordenada3p, coordenada4p;
+    int filaRand, correcto=0, i=0, numPregunta=0, limite;
+    
+    
+    int repetido;// *Sirve para saber, por medio de valores de 1 y 0, si la pregunta se repitio o no
+    //se usa para mantenerse o salirse de un while
+
+    //Elegir aleatoriamente la pregunta
+    do {
+      srand(time(NULL));
+      filaRand = rand()%17; //rand()%40+1
+      if(filaRand<15)//if de asignacion de dificultad segun la fila en la que se encuentren
+      {
+        dificultad=1;
+      }else if(filaRand<30)
+      {
+        dificultad=2;
+      }else{
+        dificultad =3;
+      }
+      repetido=0; //para saber si se repitio la pregunta o no
+
+      limite = numPreguntasPasadas;
+
+      //Procurar que no haya pasado anteriormente
+       for (i=0;i<=limite;i++) {
+        if(preguntado[i] == filaRand)//SI se repitio la pregunta, por lo que se tiene que volver a repetir el ciclo
+        {
+          repetido=1; //Se le asgina 1 para que mantenerse en el while volviendo a generar una pregunta aleatoria
+        }
+        else{
+          //NO se repitio la pregunta, por lo que puede proceder a trollear (utlizarla)
+          //Guarda que esa pregunta ya no se puede utilizar despues 
+          preguntado[numPreguntasPasadas++]=filaRand; //AGUAS, porque puede ser que sea ++numPreguntasPasadas
+        }
+      }  
+    } while(repetido==1);
+
+
+    i=0;
+    obtenerPreguntas(pregunta, filaRand);
+    //mostrar pregunta optenida
+    mvprintw(10,20, pregunta);
+    mvprintw(17,17, "A)");
+    mvprintw(18,17, "B)");
+    mvprintw(19,17, "C)");
+    mvprintw(20,17, "D)");
+    obtenerOpciones(opcionA, opcionB, opcionC, opcionD, filaRand);
+
+
+    //Las opciones se mostrarán en un orden aleatorio
+    //coordenada de la opcion a
+    srand(time(NULL));
+    coordenada1=rand() % 4;
+    coordenada1p=coordenadasOp[coordenada1];
+    mvprintw(coordenada1p,20, opcionA);
+
+
+    //coordenada de la opcion b
+    do{
+      srand(time(NULL));
+      coordenada2 = rand() % 4;
+    }while (coordenada2 == coordenada1) ;
+    coordenada2p=coordenadasOp[coordenada2];
+    mvprintw(coordenada2p,20, opcionB);
+    //coordenada de la opcion c
+    do{
+       srand(time(NULL));
+      coordenada3 = rand() % 4;
+    }while (coordenada3 == coordenada1 || coordenada2 == coordenada3) ;
+    coordenada3p=coordenadasOp[coordenada3];
+     mvprintw(coordenada3p,20, opcionC);
+    //coordenada de la opcion d
+      do{
+      srand(time(NULL));
+      coordenada4 = rand() % 4;
+    }while (coordenada4 == coordenada1 || coordenada2 == coordenada4 || coordenada3 == coordenada4 ) ;
+    coordenada4p=coordenadasOp[coordenada4];
+   mvprintw(coordenada4p,20, opcionD);
+   
+
+
+     mvprintw(100,1, coordenada1);
+    return coordenada1;
+}
 
 // -------------------------------------------->    TRANSICIONES // ANIMACIONES     <----------------------------------------------
 /*
@@ -257,20 +455,28 @@ void juego()
     wattr_on(textoPausa, A_BOLD | COLOR_PAIR(2), "");
 
     halfdelay(2); //inicio de la detección de eventos para el juego
+    //Asigna un valor de ERR, osea de -1 si no se ha mandado nada por el usuario despues de esperar 2 (décimas de segundo?)
 
 
-    int preguntado[40];
-  preguntado[0] = 90;
-  int pasada=0;
+    int preguntado[40], indice,
+        dificultad=0;
+    int numPreguntasPasadas=0;
+
+    for (indice = 0; indice < 40; indice++)
+    {
+        preguntado[indice] = NULL;
+    }
+  //preguntado[0] = 90;
+ 
   int fin = 0, 
 
       puntoEnElJuego = 1, 
       redibujar=0,minijuego=0, 
       tiempo=1, x1 = 0, 
       direccion = 1, 
-      a = 20, 
+      a = 20; 
       
-      dificultad=0;
+      
 
   int correcta=0, 
   
@@ -283,6 +489,11 @@ void juego()
       opcion=1, //Para indicar que tipo de tecla presiono en PREGUNTAS
       strike=0, base1=0,base2=0, puntaje1=0, puntaje2=0, 
       turno='1';
+
+
+
+
+
       int verifTecla = 0;
 
 
@@ -291,7 +502,7 @@ srand(time(NULL));
 
 
     //AÑadir cambio por mayusculas
-    while(innings != 9 && escape != true){
+    while(innings != 9 && escape != true && fin==0 /*&& base1<3 && base2<3*/){
         tecla = getch(); // Deteccion de eventos
         
         if (tecla == 87)
@@ -318,7 +529,7 @@ srand(time(NULL));
         {
             tecla = 100;
         }
-        /*
+        
         if (tecla == 'W')
         {
             tecla = 'w';
@@ -342,7 +553,7 @@ srand(time(NULL));
         else if (tecla == 'D')
         {
             tecla = 'd';
-        }*/
+        }
 
         switch(tecla){
         case 27: //escape
@@ -385,19 +596,19 @@ srand(time(NULL));
          
     
             break;
-        case 98:
+        case 98:// b
             opcion = 2;
             verifTecla = 1;
          
     
             break;
-        case 99:
+        case 99:// c
             opcion = 3;
             verifTecla = 1;
           
     
             break;
-        case 100:
+        case 100:// d
             opcion = 4;
             verifTecla = 1;
           
@@ -449,12 +660,13 @@ srand(time(NULL));
             break;
         
         default:
-            if((tecla != 97 && tecla != 98 && tecla != 99 && tecla != 100)  && tecla != -1)
+            if((tecla != 97 && tecla != 98 && tecla != 99 && tecla != 100)  && tecla != ERR) // ERR = -1
             {
                 verifTecla = -1;
+                opcion=0;
             }
             
-            if((tecla == 119 || tecla == 115) && activarMenuPausa == false)
+            if((tecla == 119 || tecla == 115) && activarMenuPausa == false)//ACTUALMENTE NO SIRVE 
             {
                 verifTecla = -1;
             }
@@ -470,7 +682,10 @@ srand(time(NULL));
             //opcion=0;
             break;
         }
-        if(tecla == NULL || verifTecla ==1){ //1° Filtro para autorizar el dibujo de SPRITES (CUando no hay eventos)
+        if(tecla == NULL || verifTecla ==1){ /* tecla = NULL -> 1° Filtro para autorizar el dibujo de SPRITES (CUando no hay eventos)
+                                                verifTecla sirve igual de fltro para que permita entrar al dibujo sin que entre el conflicto
+                                                con el NULL de 'tecla'
+                                                */
             if(activarMenuPausa == true){ //MENU DE PAUSA
                 if(dibujar == true){ 
                     mvwin(menuPausa, LINES/2-4, COLS/2-6); 
@@ -522,34 +737,84 @@ srand(time(NULL));
                     case 2: //se hacen las preguntas
                         if(verifTecla == -1)
                         {
-                            opcion = 0;
+                            //opcion = 0;
                             verifTecla = 0;
                         }
-                        if(opcion > 0 && opcion <= 4)
+                        
+                        if(opcion > 0 && opcion <= 4 && tecla != ERR)//Generar una nueva preguntaaaaa
                         {
+                            opcion = -1;
                             mvprintw(0,0,"                                  ");
                             mvprintw(29,29, "Turno %c", turno);
-                            //correcta=triviaPantalla(preguntado, pasada, dificultad);
+                            correcta=triviaPantalla(preguntado, numPreguntasPasadas, dificultad);//asignacion de la respuesta correcta                     
+                            printw("%i",correcta);
+                            //y captura de pregutnas y respuestas, asi como su impresion                        
+/*
+                            preguntado: un arreglo de enteros que contiene las preguntas que ya se preguntaron 
+                            anteriormente para evitar preguntar dos veces la misma pregunta.
+                            numPreguntasPasadas: la cantidad de preguntas que ya se preguntaron anteriormente.
+                            dificultad: un entero que representa la dificultad de la pregunta actual.
+*/
+                            
+/*
                             mvprintw(10,0,"      :v    ");// PRUEBA
+                            if(opcion==correcta)
+                            {
+                                mvprintw(0,0,"correcto");
+                                if(turno=='1'){
+                                    base1++;
+                                    turno='2';
+                                    puntaje1+=dificultad;
+                                }else{
+                                    turno='1';
+                                    base2++;
+                                    puntaje2+=dificultad;
+                                }
+                            }
+                            else{
+                                mvprintw(0,0,"Incorrecto");
+                                strike++;
+                                if(strike==3)
+                                {
+                                    if(turno=='1')
+                                    {
+                                        turno='2';
+                                    }
+                                    else{
+                                        turno='2';
+                                    }        
+                                }
+                            
+                            }
+                            getch();
+                            clear();*/ 
                            
                         }    
                         else if(opcion == 0)
                         {
-                            clear();
-                            mvprintw(0,0,"inválido");
+                            //clear();
+                            mvprintw(0,0,"inválido :v");
                             //opcion = 0;
                             verifTecla = -1;
                             
                         }  
+                        /*
+                        else if(opcion == -1)
+                        {
+
+                        }*/
+                        
                         
 
-                    refresh(); 
+                        refresh(); 
                         break;
                     case 3:
                         break;
                 }
             }
         }
+        
+        
         //TAl vez las PUNTUACIONES
         //Guardar las PUNTUACIONES en el archivo de texto
 
