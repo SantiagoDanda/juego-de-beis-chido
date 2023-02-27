@@ -75,8 +75,8 @@ void obtenerPuntajes(int *puntajesRegistrados, char *nombresRegistrados, char *f
                     if((fgetc(arch)) == identPuntaje2)
                     {
                         comenzarALeer = true;
-                        printw("TROLLEO");
-                    refresh();
+                        //printw("TROLLEO");
+                        //refresh();
                     
                         switch (i)
                         {
@@ -145,7 +145,8 @@ void obtenerPuntajes(int *puntajesRegistrados, char *nombresRegistrados, char *f
 void imprimirPuntajes(/*char *jugador, int longNombre, int *puntos, char *fecha, int longFecha*/)
 {
     
-    WINDOW* PUNTAJES = crear_ventana(4, 98, 4, MITADCOLS-49);
+    WINDOW* PUNTAJES = crear_ventana(10, 98, 4, MITADCOLS-49);
+    //WINDOW* PUNTAJES = crear_ventana(100, 100, 2, 0);
 
 
     char asciiValor = 'y', asciiValor2 = '~';
@@ -173,13 +174,13 @@ void imprimirPuntajes(/*char *jugador, int longNombre, int *puntos, char *fecha,
     for(i=0; i<5; i++)
     {
         //for(j=0; j<3; j++)
-        wprintw(PUNTAJES, "\n");
         wprintw(PUNTAJES, "%i° Lugar: ->", i+1);
         lecturaFichero("./puntajes.txt", PUNTAJES, ';', strGetNombre);
 
         wprintw(PUNTAJES, "-- Puntaje: %i --", puntajesRegistrados[i]);
-        wprintw(PUNTAJES, "-- Fecha: \n");
-        //lecturaFichero("./puntajes.txt", PUNTAJES, ';', strGetFecha);
+        wprintw(PUNTAJES, "-- Fecha: ");
+        lecturaFichero("./puntajes.txt", PUNTAJES, ';', strGetFecha);
+        wprintw(PUNTAJES, "\n");
 
         strGetNombre[0]--;
         strGetFecha[0]--;
