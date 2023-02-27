@@ -3,11 +3,11 @@
 3>0;
 4>43;
 5>54;
-y>Pijencio;
-x>TRollencio;
-w>Isauro;
-v>Elpepe;
-u>MiCursh;
+y>Pija;
+x>TRoll;
+w>Isaur;
+v>Pou;
+u>Crush;
 ~>12/12/2020;
 }>12/12/2020;
 |>12/12/2020;

@@ -137,18 +137,21 @@ void obtenerPuntajes(int *puntajesRegistrados, char (*nombresRegistrados)[6], ch
                         //printw("TROLLEO");
                         //refresh();                    
                         
-                        strGetNombre[0]--;                                                
+                        strGetNombre[0]--;     
+                                                                   
                     }                        
                 }
             }
             
             if(comenzarALeer == true){                
-                
+                crctr = fgetc(arch);
                 while(crctr != ';')
                 {
+                    //if((crctr>=65 && crctr<=90) || (crctr>=97 && crctr<=122))
+                        nombresRegistrados[i][y] = crctr;
                     crctr = fgetc(arch);
-                    nombresRegistrados[0][0] = crctr;
                     y++;                    
+                    printw("%c", nombresRegistrados[i][y]);
                 }      
                                                       
                 y=0;            
@@ -183,11 +186,13 @@ void obtenerPuntajes(int *puntajesRegistrados, char (*nombresRegistrados)[6], ch
                     }                        
                 }
             }
-            if(comenzarALeer == true){                
+            if(comenzarALeer == true){     
+                crctr = fgetc(arch);           
                 while(crctr != ';')
                 {
-                    crctr = fgetc(arch);
                     fechasRegistrada[i][y] = crctr;
+                    crctr = fgetc(arch);
+                    
                     y++;                    
                 }        
                                                       
