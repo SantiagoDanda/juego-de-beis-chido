@@ -19,10 +19,11 @@ Fecha: 21 de enero de 2023
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "ventanasYFicheros.c"
 #include <stdbool.h>
 #include <time.h>
 #include <unistd.h>
+#include "ventanasYFicheros.c"
+#include "puntajes.c"
 
 #define MITADCOLS COLS/2 //mitad para x
 #define MITADLINES LINES/2 //mitad para y
@@ -66,7 +67,8 @@ int main (int argc, char* const argv[])
                 escoger_pregunta();
                 break;
             case 2:
-                puntuaciones();
+                //puntuaciones();
+                imprimirPuntajes();
                 opcion = 5;
                 break;
             case 3:
@@ -162,6 +164,7 @@ void juego()
     init_pair(2, COLOR_BLUE, COLOR_BLACK);
     init_pair(3, COLOR_MAGENTA, COLOR_BLACK);
     int tecla;
+
 
     FILE* puntuaciones = fopen("./archivos_texto/puntuaciones.txt", "w");
     if(puntuaciones == NULL){
