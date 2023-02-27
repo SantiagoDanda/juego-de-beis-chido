@@ -34,6 +34,7 @@ typedef struct
     int puntos;
     char fecha[11];
 } Jugador;
+Jugador jugador1, jugador2;
 
 void juego();
 void puntuaciones();
@@ -68,7 +69,17 @@ int main (int argc, char* const argv[])
                 break;
             case 2:
                 //puntuaciones();
-                imprimirPuntajes();
+                jugador1.nombre;
+                jugador1.puntos = 1616;
+                jugador1.fecha;
+                
+                //if (Jugador1.puntos > Jugador2.puntos)
+                    compararPuntajes(jugador1.nombre, &jugador1.puntos, jugador1.fecha, 6, 11);
+                //else
+                    //compararPuntajes(Jugador2.nombre, &Jugador2.puntos, Jugador2.fecha);
+
+    
+                //imprimirPuntajes();
                 opcion = 5;
                 break;
             case 3:
@@ -173,7 +184,7 @@ void juego()
         exit(1);
     }
     
-    Jugador jugador1, jugador2;
+    
     WINDOW* bienvenida = crear_ventana(3, 76, MITADLINES-2, MITADCOLS-38);
     WINDOW* salir = crear_ventana(1, 24, 0, 0);
     refresh();
