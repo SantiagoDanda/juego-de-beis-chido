@@ -1,55 +1,110 @@
 00¿Cuál es la estrella más brillante del cielo nocturno visible?;
+1:Sirio2;Betelgeuse3;Rigel]
 01¿Cuál es el planeta más grande?;
-02¿Qué día pisó Armstrong la Luna?;
+1:Jupiter2;Urano3;Mercurio]
+02¿En qué mes pisó Armstrong la Luna en el 69?;
+1:Julio2;Junio3;Agosto]
 03¿Cuál es la estrella más cercana al sistema solar?;
+1:Prox.Centauri2;Estrella Polar3;Pólux]
 04¿En qué siglo se inventó el primer telescopio?;
+1;XV2:XVII3;XVI]
 05¿Se puede ver la Estación Espacial Internacional sin un telescopio?;
+1;No2:Depende del entorno3;Sí]
 06¿A qué corresponde una Unidad Astronómica (UA)?;
+1:Distancia Tierra/Sol2;Diametro Sol3;Diametro Tierra]
 07¿Cuál de estos cuerpos celestes no es una luna del planeta Júpiter?;
+1;Io2:Deimos3;Ganímedes]
 08Proyecto que busca vida inteligente fuera de la Tierra;
-09¿A qué fenómeno alude el término "nova"?;
+1;MEDIAFIRE2;MEGA3:SETI]
+09¿A qué fenómeno alude el término "nova" en astronomía?;
+1:Muerte estelar2;Nacimiento estelar3;Al superhéroe]
 10¿Qué sistema estelar recibe su nombre de un conocido literato universal?;
+1;A. David Revilla2:Cervantes3;Shakespeare]
 11¿Cuál es la estrella más grande conocida por el ser humano?;
+1;Arcturus2;VY Canis3:UY Scuti]
 12¿Qué temperaturas se pueden llegar a alcanzar en el Sol?;
+1:Quince millones2;Mil millones3;Cien millones]
 13Región del sistema solar comprendida entre las órbitas de Marte y Júpiter;
+1;Cint. Orión2:Cinturón de ast.3;Cint. de Kuiper]
 14Objeto fabricado por el hombre más alejado de la Tierra;
+1;Enterprise2;Halcón Milenario3:Voyager]
 15¿Cómo se llama y dónde se encuentra la montaña más alta del sistema solar?;
-16;
-17;
-18;
-19;
-20;
-21;
-22;
-23;
-24;
-25;
-26;
-27;
-28;
-29;
-30;
-31;
-32;
-33;
-34;
-35;
-36;
-37;
-38;
-39;
-40;
-41;
-42;
-43;
-44;
-45;
-46;
-47;
-48;
-49;
-50;
-51;
-52;
-53;
-54;
+1:Monte Olimpo2;Cuexomate3;Megaverest]
+16¿En qué organelo celular se guarda el ADN?;
+1;Citoplasma2:Núcleo3;Ribosoma]
+17¿Cómo se le llama a la teoría que propone que el ADN se convierte en proteína y no al revés?;
+1;Ciclo genético gradual2;Ciclo protéico3:Dogma Central B. Mol]
+18Nombre de la teoría que propone la simbiosis de dos bacterias para formar una eucariota;
+1:Endosimbiosis2;Simbiogenosis3;Eucariogenosis]
+19Nombre de la científica que propuso la endosimbiosis;
+1;Ada Lovelace2:Lynn Margulis3;Marie Curie]
+20Nombres de los científicos que propusieron el modelo de la doble hélice del ADN;
+1;Villagrán y Bolaños2;Burnett y Lowery3:Watson y Crick]
+21Proteína más grande en el ser humano;
+1:Titina2;Titantitina3;Gigantina]
+22El ADN se compone por una base nitrogenada, azúcar y...;
+1;Grupo amina2:Grupo fosfato3;Ácido carboxíloco]
+23Selecciona el aminoácido NO esencial;
+1;Valina2;Leucina3:Glicina]
+24¿Cómo se le llama al disacárido compuesto de una glucosa y una fructosa?;
+1:Sacarosa2;Galactosa3;Amidón]
+25¿Con cuál especie hizo Mendel sus estudios sobre genética?;
+1;Zanahoria2:Chícharo3;Rosas]
+26Químicamente hablando, ¿qué son los carbohidratos?;
+1;Aminas o cetonas2;Amidas o cetonas3:Aldehídos o cetonas]
+27¿Cuál fue la última frase de Arquímedes?;
+1:No molestes mis círculos2;Nomolestes mi triángulo3;No molestes mi palanca]
+28Ocho entre dos por dos más dos;
+1;Ocho2:Dieciséis3;Uno]
+29¿Qué es una proporción?;
+1;Una razón2;Desigualdad de razones3:Igualdad de razones]
+30¿A quién se le atribuye ser la o el primer progamador?;
+1:Ada Lovelace2;Richard Stallman3;Lord Byron]
+31¿Quién creó el lenguaje de programación C?;
+1;Alejandro Taboada2:Dennis Ritchie3;Bjarne Stroustrup]
+32¿Cómo se llama el algoritmo de ordenamiento más rápido?;
+1;Ordenamiento inserción2;Bubble sort3:Quicksort]
+33Famoso desarrollador mexicano y fundador de GNOME;
+1:Miguel de Icaza2;Ricardo Casilla3;Carlos A. Campos]
+34Nombre del desarrollador que inició el kernel de Linux;
+1;Bill Gates (NO)2:Linus Torvalds3;Richard Stallman]
+35Uruguaya, pionera en traer el internet a hispanoamérica;
+1;Angie Villanueva2;Jake Feinler3:Ida Holz]
+36Proceso mediante el cual las células se replican;
+1:Mitosis2;Meiosis3;Gametogénesis]
+37¿Quién fue el líder del bando conservador durante la guerra de Reforma?;
+1;Miguel Lerdo2:Miguel Miramón3;Benito Juárez]
+38¿Cuál de estos personajes se sentó en la silla presidencial?;
+1;Pascual Orozco2;Emiliano Zapata3:Doroteo Arango]
+39¿Quién firmó la Constitución de 1917?;
+1:Venustiano Carranza2;Emiliano Zapata3;Flores Magón]
+40¿Cuántas cruzadas hubo?;
+1;Dos2:Ocho3;Seis]
+41Presidente mexicano que duró cuarenta y cinco minutos en el poder;
+1;Eulalio Gutiérrez2;Francisco Carvajal3:Pedro Lascuráin]
+42Cuál de los siguientes tipos de energía se asocia con la posición de un objeto?;
+1:Potencial2;Térmica3;Cinética]
+43¿Cuál de las siguientes fórmulas representa la ley de Ohm?;
+1;P=VI2:V=IR3;F=ma]
+44¿Qué ley establece que la presión y la temperatura de un gas son inversamente proporcionales?;
+1;Ley de Charles2;Ley de Avogadro3:Ley de Boyle]
+45¿Cuál de las siguientes propiedades no es una propiedad periódica?;
+1:Masa atómica2;Energía de ionización3;Radio atómico]
+46En un átomo neutro, los protones tienen una cantidad respecto a la de los electrones...;
+1;Menor2:Igual3;Mayor]
+47Es un hidrocarburo saturado;
+1;Acetileno2;Etileno3:Etano]
+48¿Cuál de los siguientes elementos tiene la electronegatividad más alta?;
+1:Flúor2;Sodio3;Carbono]
+49¿Cuál de los siguientes tipos de enlace se forma entre un metal y un no metal?;
+1;Covalente2:Iónico3;Metálico]
+50¿Cuál de los siguientes elementos es un metal alcalino?;
+1;Carbono2;Aluminio3:Potasio]
+51¿Cuál de los siguientes elementos es un gas noble?;
+1:Helio2;Hidrógeno3;Oxígeno]
+52¿Cuál de las siguientes propiedades físicas es una propiedad coligativa?;
+1;Calor específico2:P. ebullición3;Densidad]
+53¿Qué es internet?;
+1;Un tipo de cable2;Una onda3:Una red de computadoras]
+54Es una característica del lenguaje C, excepto...;
+1:Alto nivel2;Estructurado3;Estático]

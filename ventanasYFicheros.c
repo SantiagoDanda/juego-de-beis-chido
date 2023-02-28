@@ -30,7 +30,7 @@ void destruir_ventana(WINDOW* ventana)
   delwin(ventana);
 }
 
-void lecturaFicheros(char* const nombreArchivo, WINDOW* ventana, char limite, char* inicioLectura)
+int lecturaFicheros(char* const nombreArchivo, WINDOW* ventana, char limite, char* inicioLectura)
 {
   FILE* archivo;
 
@@ -59,5 +59,9 @@ void lecturaFicheros(char* const nombreArchivo, WINDOW* ventana, char limite, ch
       parar = true;
     }
   }
+
+  int bytesCursor = ftell(archivo);
   fclose(archivo);
+
+  return bytesCursor;
 }
