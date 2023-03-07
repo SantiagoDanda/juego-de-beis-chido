@@ -22,4 +22,10 @@ la cual generamos palabras con arte ascii.
 
 -A los usuarios que crearon arte ascii utilizado en el proyecto, 
 pero que no podemos referenciar pues no existe información 
-sobre ellos.;
+sobre ellos.
+
+-A Carlos A. Campos y a Angie Villanueva por ser los mejores
+profesores de prepa 6!!!
+
+
+Presiona ESC para salir.;

@@ -35,8 +35,8 @@ typedef struct
 } Jugador;
 
 void juego();
-void puntuaciones();
-void creditos();
+void pantallas_info(int opcion);
+void instrucciones();
 int escoger_respuestas(int bytesCursor, WINDOW* ventana);
 int menu(); //devuelve la opción elegida
 
@@ -56,26 +56,25 @@ int main (int argc, char* const argv[])
     refresh();
 
     int opcion = menu();
-    while(opcion != 4){
+    while(opcion != 3){
         switch(opcion){
             case 0:
                 juego();
-                opcion = 5;
+                opcion = 4;
                 break;
             case 1:
+                pantallas_info(1); //instrucciones
+                opcion = 4;
                 break;
             case 2:
-                puntuaciones();
-                opcion = 5;
+                pantallas_info(2); //creditos
+                opcion = 4;
                 break;
             case 3:
-                creditos();
-                opcion = 5;
                 break;
             case 4:
-                break;
-            case 5:
                 opcion = menu();
+                break;
         }
     }
     endwin();
@@ -101,35 +100,48 @@ int menu()
     int opc = 0, tecla, redimension = 1;
     char opciones[5][14] = { "Jugar", //opc 0
                             "Instrucciones", //opc 1
-                            "Puntuaciones", //opc 2
-                            "Créditos", //opc 3
-                            "Salir" //op4
+                            "Créditos", //opc 2
+                            "Salir" //op3
                             };
 
     do{
         switch (tecla){
-        case 119: //letra w
-            if(opc != 0)
-                opc--;
-            else
-                opc = 4;
-            redimension = 1;
-            break;
-        case 115: //letra s
-            if(opc != 4)
-                opc++;
-            else
-                opc = 0;
-            redimension = 1;
-            break;
-        case 410: //caso de redimensionamiento
-            clear();
-            refresh();
-            mvwin(vntntxt, 5, MITADCOLS-50);
-            mvwin(vntnopciones, MITADLINES, MITADCOLS-7);
-            wrefresh(vntntxt);
-            wrefresh(vntnopciones);
-            break;
+            case 87: //W
+                if(opc != 0)
+                    opc--;
+                else
+                    opc = 3;
+                redimension = 1;
+                break;
+            case 83: //S
+                if(opc != 3)
+                    opc++;
+                else
+                    opc = 0;
+                redimension = 1;
+                break;
+            case 119: //letra w
+                if(opc != 0)
+                    opc--;
+                else
+                    opc = 3;
+                redimension = 1;
+                break;
+            case 115: //letra s
+                if(opc != 3)
+                    opc++;
+                else
+                    opc = 0;
+                redimension = 1;
+                break;
+            case 410: //caso de redimensionamiento
+                clear();
+                refresh();
+                mvwin(vntntxt, 5, MITADCOLS-50);
+                mvwin(vntnopciones, MITADLINES, MITADCOLS-7);
+                wrefresh(vntntxt);
+                wrefresh(vntnopciones);
+                break;
         }
         if(redimension == 1){ //se imprimen las opciones
             for(int i = 0; i <= 4; i++){
@@ -162,13 +174,6 @@ void juego()
     init_pair(4, COLOR_WHITE, COLOR_RED);
     init_pair(5, COLOR_BLACK, COLOR_GREEN);
     int tecla;
-
-    FILE* puntuaciones = fopen("./archivos_texto/puntuaciones.txt", "w");
-    if(puntuaciones == NULL){
-        endwin();
-        printf("No se pudo acceder a  la escritura de puntuaciones");
-        exit(1);
-    }
     
     Jugador jugador1, jugador2;
     jugador1.puntos = 0;
@@ -235,10 +240,11 @@ void juego()
     ciclos = 0, //ciclos sirve para controlar las animaciones
     turno = 1, //referente al turno del jugador
     indicePreguntas = 0, //controla qué localidad del arreglo de preguntas barajeadas se toma en cuenta
-    ciclosJuego = 135, //controla los segundos según la entrada
+    ciclosJuego = 44, //controla los segundos según la entrada
     opcPregunta = 1, //si la respuesta elegida es a b o c
-    resCorrecta;
-    bool escape = false, activarMenu = false, dibujar = false, respondio = false;
+    resCorrecta,
+    vecesJugadas = 1;
+    bool escape = false, activarMenu = false, dibujar = false, respondio = false, equivocado = false;
     char botonesPausa[2][9]= {
                                 "regresar",
                                 "Salir"
@@ -274,116 +280,56 @@ void juego()
         fflush(stdin);
         tecla = getch();
         switch(tecla){
-        case 27: //escape
-            clear();
-            if(activarMenu == false){
-                activarMenu = true;
-                dibujar = true;
-            }
-            else{
-                activarMenu = false;
-                wclear(textoPausa);
-                if(parteDelJuego == 0){
-                    wclear(textoInnings);
-                    wclear(numInnings);
+            case 87: //W
+                if(activarMenu == true){
+                    if(opcionPausa != 0)
+                        opcionPausa--;
+                    else
+                        opcionPausa = 1;
+                    dibujar = true;
+                    tecla = NULL;
                 }
-                if(parteDelJuego == 1){
-                    wclear(textoTurno);
-                    wclear(numInnings);
-                }
+                break;
+            case 65: //A
                 if(parteDelJuego == 2){
+                    if(opcPregunta == 1)
+                        opcPregunta = 3;
+                    else
+                        opcPregunta--;
+                    dibujar = true;
                     wclear(pregunta);
-                    wclear(opA);
-                    wclear(opB);
-                    wclear(opC);
-                    wclear(opC);
                     wclear(respuestas);
                 }
-                dibujar = true;
+                tecla = NULL;
+                break;
+            case 83: //S
+                if(activarMenu == true){
+                    if(opcionPausa != 1)
+                        opcionPausa++;
+                    else
+                        opcionPausa = 0;
+                    dibujar = true;
+                    tecla = NULL;
+                }
+                break;
+            case 68: //D
+                if(parteDelJuego == 2){
+                    if(opcPregunta == 3)
+                        opcPregunta = 1;
+                    else
+                        opcPregunta ++;
+                    dibujar = true;
+                    wclear(pregunta);
+                    wclear(respuestas);
+                }
+                tecla = NULL;
+                break;
+            case 27: //escape
                 clear();
-            }
-            break;
-        
-        case 97: //a
-            if(parteDelJuego == 2){
-                if(opcPregunta == 1)
-                    opcPregunta = 3;
-                else
-                    opcPregunta--;
-                dibujar = true;
-                wclear(pregunta);
-                wclear(respuestas);
-            }
-            tecla = NULL;
-            break;
-        case 100: //d
-            if(parteDelJuego == 2){
-                if(opcPregunta == 3)
-                    opcPregunta = 1;
-                else
-                    opcPregunta ++;
-                dibujar = true;
-                wclear(pregunta);
-                wclear(respuestas);
-            }
-            tecla = NULL;
-            break;
-        
-        case 410: //redimensión
-            clear();
-            refresh();
-            if(activarMenu == true){
-                mvwin(menuPausa, MITADLINES-4, MITADCOLS-6);
-                mvwin(textoPausa, 3, MITADCOLS-25);
-                wrefresh(menuPausa);
-                wrefresh(textoPausa);
-            }
-            if(parteDelJuego == 0){
-                mvwin(textoInnings, MITADLINES-16, MITADCOLS-31);
-                mvwin(numInnings, MITADLINES+4, MITADCOLS-5);
-            }
-            if(parteDelJuego == 1){
-                mvwin(textoTurno, MITADLINES-16, MITADCOLS-49);
-                mvwin(numInnings, MITADLINES+4, MITADCOLS-5);
-            }
-            if(parteDelJuego == 2){
-                mvwin(pregunta, 4, MITADCOLS-49);
-                mvwin(opC, MITADLINES + MITADLINES/2, MITADCOLS + MITADCOLS/2-5);
-                mvwin(opB, MITADLINES + MITADLINES/2, MITADCOLS-5);
-                mvwin(opA,  MITADLINES + MITADLINES/2, MITADCOLS - MITADCOLS/2-5);
-                mvwin(respuestas, MITADLINES-2, MITADCOLS-13);
-            }
-            activarMenu = true;
-            tecla = NULL;
-            dibujar = true;
-            break;
-
-        case 119: //letra w
-            if(activarMenu == true){
-                if(opcionPausa != 0)
-                    opcionPausa--;
-                else
-                    opcionPausa = 1;
-                dibujar = true;
-                tecla = NULL;
-            }
-            break;
-
-        case 115: //letra s
-            if(activarMenu == true){
-                if(opcionPausa != 1)
-                    opcionPausa++;
-                else
-                    opcionPausa = 0;
-                dibujar = true;
-                tecla = NULL;
-            }
-            break;
-        
-        case 10: //enter
-            if(activarMenu == true){
-                if(opcionPausa == 1)
-                    escape = true;
+                if(activarMenu == false){
+                    activarMenu = true;
+                    dibujar = true;
+                }
                 else{
                     activarMenu = false;
                     wclear(textoPausa);
@@ -391,40 +337,146 @@ void juego()
                         wclear(textoInnings);
                         wclear(numInnings);
                     }
-                    else if(parteDelJuego == 1){
+                    if(parteDelJuego == 1){
                         wclear(textoTurno);
                         wclear(numInnings);
                     }
-                    else if(parteDelJuego == 2){
+                    if(parteDelJuego == 2){
                         wclear(pregunta);
                         wclear(opA);
                         wclear(opB);
                         wclear(opC);
+                        wclear(opC);
                         wclear(respuestas);
                     }
+                    dibujar = true;
+                    clear();
                 }
-                clear();
-                dibujar = true;
-            }
-            else{
+                break;
+            
+            case 97: //a
                 if(parteDelJuego == 2){
-                    respondio = true;
-                    if(opcPregunta == resCorrecta){
-                        if(turno == 1)
-                            jugador1.puntos++;
+                    if(opcPregunta == 1)
+                        opcPregunta = 3;
+                    else
+                        opcPregunta--;
+                    dibujar = true;
+                    wclear(pregunta);
+                    wclear(respuestas);
+                }
+                tecla = NULL;
+                break;
+            case 100: //d
+                if(parteDelJuego == 2){
+                    if(opcPregunta == 3)
+                        opcPregunta = 1;
+                    else
+                        opcPregunta ++;
+                    dibujar = true;
+                    wclear(pregunta);
+                    wclear(respuestas);
+                }
+                tecla = NULL;
+                break;
+            
+            case 410: //redimensión
+                clear();
+                refresh();
+                if(activarMenu == true){
+                    mvwin(menuPausa, MITADLINES-4, MITADCOLS-6);
+                    mvwin(textoPausa, 3, MITADCOLS-25);
+                    wrefresh(menuPausa);
+                    wrefresh(textoPausa);
+                }
+                if(parteDelJuego == 0){
+                    mvwin(textoInnings, MITADLINES-16, MITADCOLS-31);
+                    mvwin(numInnings, MITADLINES+4, MITADCOLS-5);
+                }
+                if(parteDelJuego == 1){
+                    mvwin(textoTurno, MITADLINES-16, MITADCOLS-49);
+                    mvwin(numInnings, MITADLINES+4, MITADCOLS-5);
+                }
+                if(parteDelJuego == 2){
+                    mvwin(pregunta, 4, MITADCOLS-49);
+                    mvwin(opC, MITADLINES + MITADLINES/2, MITADCOLS + MITADCOLS/2-5);
+                    mvwin(opB, MITADLINES + MITADLINES/2, MITADCOLS-5);
+                    mvwin(opA,  MITADLINES + MITADLINES/2, MITADCOLS - MITADCOLS/2-5);
+                    mvwin(respuestas, MITADLINES-2, MITADCOLS-13);
+                }
+                activarMenu = true;
+                tecla = NULL;
+                dibujar = true;
+                break;
+
+            case 119: //letra w
+                if(activarMenu == true){
+                    if(opcionPausa != 0)
+                        opcionPausa--;
+                    else
+                        opcionPausa = 1;
+                    dibujar = true;
+                    tecla = NULL;
+                }
+                break;
+
+            case 115: //letra s
+                if(activarMenu == true){
+                    if(opcionPausa != 1)
+                        opcionPausa++;
+                    else
+                        opcionPausa = 0;
+                    dibujar = true;
+                    tecla = NULL;
+                }
+                break;
+            
+            case 10: //enter
+                if(activarMenu == true){
+                    if(opcionPausa == 1)
+                        escape = true;
+                    else{
+                        activarMenu = false;
+                        wclear(textoPausa);
+                        if(parteDelJuego == 0){
+                            wclear(textoInnings);
+                            wclear(numInnings);
+                        }
+                        else if(parteDelJuego == 1){
+                            wclear(textoTurno);
+                            wclear(numInnings);
+                        }
+                        else if(parteDelJuego == 2){
+                            wclear(pregunta);
+                            wclear(opA);
+                            wclear(opB);
+                            wclear(opC);
+                            wclear(respuestas);
+                        }
+                    }
+                    clear();
+                    dibujar = true;
+                }
+                else{
+                    if(parteDelJuego == 2){
+                        respondio = true;
+                        if(opcPregunta == resCorrecta){
+                            if(turno == 1)
+                                jugador1.puntos++;
+                            else
+                                jugador2.puntos++;
+                        }
                         else
-                            jugador2.puntos++;
+                            equivocado = true;
                     }
                 }
+                tecla = NULL;
+                refresh();
+                break;
+            
+            default:
+                tecla = NULL;
+                break;
             }
-            tecla = NULL;
-            refresh();
-            break;
-        
-        default:
-            tecla = NULL;
-            break;
-        }
         if(tecla == NULL){
             if(activarMenu == true){ //menu
                 if(dibujar == true){ 
@@ -505,7 +557,6 @@ void juego()
                             wclear(textoTurno);
                             wclear(numInnings);
                             clear();
-                            printw("%i", ciclos);
                         }
                         break;
                     case 2: //se hacen las preguntas
@@ -515,7 +566,6 @@ void juego()
                                     strPreguntas[0] += preguntasRevueltas[indicePreguntas] / 10;
                                 strPreguntas[1] += preguntasRevueltas[indicePreguntas] % 10;
                             }
-                            printw("%s", strPreguntas);
 
                             wmove(pregunta, 1, 2);
                             resCorrecta = escoger_respuestas(lecturaFicheros("./preguntas/preguntas.txt", pregunta, ';', strPreguntas), respuestas);
@@ -550,11 +600,13 @@ void juego()
                             wrefresh(opC);
                             dibujar = false;
                         }
-                        //se controla despues ciclosJuego -= innings * 15 ^
                         ciclos++;
-                        if(ciclos != 28)
+                        if(ciclos != ciclosJuego){
                             usleep(55000);
-                        if(ciclos == 28 || respondio == true){
+                        }
+                        if(ciclos == ciclosJuego || respondio == true){
+                            if(ciclos == ciclosJuego && respondio == false)
+                                equivocado = true;
                             respondio = false;
                             strPreguntas[0] = '0';
                             strPreguntas[1] = '0';
@@ -566,48 +618,86 @@ void juego()
                             wclear(respuestas);
                             clear();
                             if(turno == 1){
-                                parteDelJuego = 1;
-                                turno = 2;
+                                if(vecesJugadas != 4){
+                                    parteDelJuego = 2;
+                                    vecesJugadas++;
+                                }
+                                if(vecesJugadas == 4 || equivocado == true){
+                                    turno = 2;
+                                    vecesJugadas = 1;
+                                    equivocado = false;
+                                    parteDelJuego = 1;
+                                }
                             }
                             else{
-                                parteDelJuego = 0;
-                                turno = 1;
-                                innings++;
+                                if(vecesJugadas != 4){
+                                    parteDelJuego = 2;
+                                    vecesJugadas++;
+                                }
+                                if(vecesJugadas == 4 || equivocado == true){
+                                    turno = 1;
+                                    vecesJugadas = 1;
+                                    parteDelJuego = 0;
+                                    innings++;
+                                    ciclosJuego -= 4;
+                                    equivocado = false;
+                                }
                             }
                             indicePreguntas++;
+                            ciclos = 0;
                             refresh();
+                            if(innings == 10)
+                                parteDelJuego = 3;
+                            clear();
                         }
-                        break;
-                    case 3: //se muestra si se acertó
                         break;
                 }
             }
         }
     }
+    if(jugador1.puntos != jugador2.puntos){
+        move(3, MITADCOLS - 10);
+        if(jugador1.puntos > jugador2.puntos){
+            printw("¡Felicidades, %s!", jugador1.nombre);
+            attron(A_BOLD | COLOR_PAIR(1));
+        }
+        else{
+            printw("¡Felicidades, %s!", jugador2.nombre);
+            attron(A_BOLD | COLOR_PAIR(2));
+        }
+    }
+    else{
+        move(3, MITADCOLS - 10);
+        attron(A_BOLD | COLOR_PAIR(3));
+        printw("¡Ha sido un empate!");
+    }
+    move(8, MITADCOLS-7);
+    printw("N. de carreras:\n");
+    move(10, MITADCOLS-6);
+    printw("Jugador 1: %i", jugador1.puntos);
+    move(12, MITADCOLS-6);
+    printw("Jugador 2: %i", jugador2.puntos);
+    refresh();
+    usleep(6000000);
     clear();
-    destruir_ventana(menuPausa);
-    destruir_ventana(salir);
-    destruir_ventana(textoPausa);
-    destruir_ventana(textoInnings);
     refresh();
 }
 
-void puntuaciones()
+void pantallas_info(int opcion)
 {
-
-}
-
-void creditos()
-{
-    WINDOW* texto = crear_ventana(26, 65, 0, 0);
+    WINDOW* texto = crear_ventana(35, 65, 3, MITADCOLS - 32);
     refresh();
-    lecturaFicheros("./archivos_texto/creditos.txt", texto, ';', "00");
+    if(opcion == 1)
+        lecturaFicheros("./archivos_texto/instrucciones.txt", texto, ';', "00");
+    else
+        lecturaFicheros("./archivos_texto/creditos.txt", texto, ';', "00");
     wrefresh(texto);
     int tecla;
-    while((tecla = wgetch(texto)) != 10){
-
+    while((tecla = wgetch(texto)) != 27){
+        continue;
     }
     destruir_ventana(texto);
+    clear();
 }
 
 int escoger_respuestas(int bytesCursor, WINDOW* ventana)

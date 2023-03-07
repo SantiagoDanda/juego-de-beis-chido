@@ -1,0 +1,12 @@
+00Cuando esté en el juego, puede activar el menú con la 
+tecla ESC.
+
+Puede moverse a través del menú con las teclas W y S, y 
+seleccionar con la tecla enter.
+
+Cuando le toque batear en el juego, utilice las teclas A 
+y D para moverse, y seleccione con enter.
+
+¡¡¡Diviértete!!! :D
+
+Presiona ESC para salir.;
