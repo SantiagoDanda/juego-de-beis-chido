@@ -19,10 +19,11 @@ Fecha: 21 de enero de 2023
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "ventanasYFicheros.c"
 #include <stdbool.h>
 #include <time.h>
 #include <unistd.h>
+#include "ventanasYFicheros.c"
+#include "puntajes.c"
 
 #define MITADCOLS COLS/2 //mitad para x
 #define MITADLINES LINES/2 //mitad para y
@@ -33,6 +34,7 @@ typedef struct
     int puntos;
     char fecha[11];
 } Jugador;
+Jugador jugador1, jugador2;
 
 void juego();
 void pantallas_info(int opcion);
