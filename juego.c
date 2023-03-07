@@ -708,6 +708,7 @@ int escoger_respuestas(int bytesCursor, WINDOW* ventana)
     }
     char correcta;
     char crctr, crctrApoyo;
+    int contador = 1;
 
     fseek(archivo, bytesCursor+1, SEEK_SET);
 
@@ -717,7 +718,13 @@ int escoger_respuestas(int bytesCursor, WINDOW* ventana)
             crctr = fgetc(archivo);
             if(crctr == ':')
                 correcta = crctrApoyo;
-            wprintw(ventana, "\nA:");
+            if(contador == 1)
+                wprintw(ventana, "\nA:");
+            else if(contador == 2)
+                wprintw(ventana, "\nB:");
+            else if(contador == 3)
+                wprintw(ventana, "\nC:");
+            contador++;
         }
         else if(crctr != ':' || crctr != ';'){
             wprintw(ventana, "%c", crctr);
