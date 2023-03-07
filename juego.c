@@ -480,7 +480,7 @@ void juego()
                 break;
             }
         if(tecla == NULL){
-            if(activarMenu == true){ //menu
+            if(activarMenuPausa == true){ //MENU DE PAUSA
                 if(dibujar == true){ 
                     mvwin(menuPausa, MITADLINES-4, MITADCOLS-6); 
                     wclear(menuPausa);
@@ -500,7 +500,7 @@ void juego()
                     dibujar = false;
                 }
             }
-            else{ //juego
+            else{ //JUEGO 
                 switch(parteDelJuego){
                     case 0: //se reproduce animación que indica qué inning se está jugando
                         if(ciclos == 0 || dibujar == true){
@@ -656,6 +656,10 @@ void juego()
                 }
             }
         }
+        //TAl vez las PUNTUACIONES
+        //Guardar las PUNTUACIONES en el archivo de texto
+
+
     }
     if(jugador1.puntos != jugador2.puntos){
         move(3, MITADCOLS - 10);
