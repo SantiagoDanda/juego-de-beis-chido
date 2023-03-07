@@ -1,17 +1,13 @@
 /*
 juego.c
-
 En este código se crea prácticamente todo el juego. Está hecho de tal forma que cada apartado del menú (juego, instrucciones, créditos etc)
 está hecho en una subrutina distinta. 
-
 Podrá observar que en la subrutina de juegos hay algunas divisiones. Por una parte, se señala cuando el programa lee entradas del usuario 
 y cuando "dibuja", dependiendo de si el juego está en pausa o ejecutándose. Asimismo se señala a través de la variable "parteDelJuego" en
 qué preciso momento de la ejecución se encuentra el programa.
-
 Autor: Santiago Danda
 <email: quetzal.danda@gmail.com>
 <github: SantiagoDanda>
-
 Fecha: 21 de enero de 2023
 */
 
@@ -480,7 +476,7 @@ void juego()
                 break;
             }
         if(tecla == NULL){
-            if(activarMenuPausa == true){ //MENU DE PAUSA
+            if(activarMenu == true){ //menu
                 if(dibujar == true){ 
                     mvwin(menuPausa, MITADLINES-4, MITADCOLS-6); 
                     wclear(menuPausa);
@@ -500,7 +496,7 @@ void juego()
                     dibujar = false;
                 }
             }
-            else{ //JUEGO 
+            else{ //juego
                 switch(parteDelJuego){
                     case 0: //se reproduce animación que indica qué inning se está jugando
                         if(ciclos == 0 || dibujar == true){
@@ -656,10 +652,6 @@ void juego()
                 }
             }
         }
-        //TAl vez las PUNTUACIONES
-        //Guardar las PUNTUACIONES en el archivo de texto
-
-
     }
     if(jugador1.puntos != jugador2.puntos){
         move(3, MITADCOLS - 10);
