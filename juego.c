@@ -19,7 +19,6 @@ Fecha: 21 de enero de 2023
 #include <time.h>
 #include <unistd.h>
 #include "ventanasYFicheros.c"
-#include "puntajes.c"
 
 #define MITADCOLS COLS/2 //mitad para x
 #define MITADLINES LINES/2 //mitad para y
