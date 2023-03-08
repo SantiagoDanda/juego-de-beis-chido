@@ -1,10 +1,10 @@
-#Béisbol Quest
+# Béisbol Quest
 
 Este proyecto es un juego de trivia hecho en C para un concurso de bachillerato, inspirado en el béisbol.
 
 Creado por Santiago Danda.
 
-##-Información sobre el proyecto-
+## -Información sobre el proyecto-
 
 Utiliza la biblioteca ncurses, por lo que corre en terminales de sistemas unix-like.
 
