@@ -1,12 +1,11 @@
 # Béisbol Quest
 
-Este proyecto es un juego de trivia hecho en C para un concurso de bachillerato, inspirado en el béisbol.
+This project is a trivia game for a school contest.
 
-Creado por Santiago Danda.
+Created by Santiago Danda.
 
-## -Información sobre el proyecto-
+## -Info about the project-
 
-Utiliza la biblioteca ncurses, por lo que corre en terminales de sistemas unix-like.
+It uses ncurses library for the graphics, so the game is only intended to run in unix-like terminals.
 
-No todos los sprites son de mi autoría. Utilicé mucho la página de Patjork para las fuentes, y la página de
-ASCII archive para algunos dibujos.
+Not all the sprites are mine. I used some of the Patjork's website tools for generating the fonts, and some sprites of the ASCII archive page.
